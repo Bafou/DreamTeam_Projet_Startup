@@ -45,10 +45,6 @@ public class Locator implements LocationListener {
         this.locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
     }
 
-
-
-
-
     public void getLocation(Locator.Method method, Locator.Listener callback) {
         this.method = method;
         this.callback = callback;
