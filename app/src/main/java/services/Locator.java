@@ -78,21 +78,28 @@ public class Locator implements LocationListener {
     }
 
     private void requestUpdates(String provider) {
-        if (this.locationManager.isProviderEnabled(provider)) {
-            if (provider.contentEquals(LocationManager.NETWORK_PROVIDER)
-                    && Connectivity.isConnected(this.context)) {
-                Log.d(LOG_TAG, "Network connected, start listening : " + provider);
-                this.locationManager.requestLocationUpdates(provider, TIME_INTERVAL, DISTANCE_INTERVAL, this);
-            } else if (provider.contentEquals(LocationManager.GPS_PROVIDER)
-                    && Connectivity.isConnectedMobile(this.context)) {
-                Log.d(LOG_TAG, "Mobile network connected, start listening : " + provider);
-                this.locationManager.requestLocationUpdates(provider, TIME_INTERVAL, DISTANCE_INTERVAL, this);
-            } else {
-                Log.d(LOG_TAG, "Proper network not connected for provider : " + provider);
+        switch (provider){
+            case LocationManager.NETWORK_PROVIDER :
+                if(Connectivity.isConnected(this.context)){
+                    Log.d(LOG_TAG, "Network connected, start listening : " + provider);
+                    this.locationManager.requestLocationUpdates(provider, TIME_INTERVAL, DISTANCE_INTERVAL, this);
+                } else {
+                    Log.d(LOG_TAG, "Proper network not connected for provider : " + provider);
+                    this.onProviderDisabled(provider);
+                }
+                break;
+            case LocationManager.GPS_PROVIDER :
+                if(Connectivity.isConnectedMobile(this.context)){
+                    Log.d(LOG_TAG, "Mobile network connected, start listening : " + provider);
+                    this.locationManager.requestLocationUpdates(provider, TIME_INTERVAL, DISTANCE_INTERVAL, this);
+                } else {
+                    Log.d(LOG_TAG, "Proper network not connected for provider : " + provider);
+                    this.onProviderDisabled(provider);
+                }
+                break;
+            default:
                 this.onProviderDisabled(provider);
-            }
-        } else {
-            this.onProviderDisabled(provider);
+                break;
         }
     }
 
