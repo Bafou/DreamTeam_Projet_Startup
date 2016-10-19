@@ -82,16 +82,14 @@ public class Locator implements LocationListener {
     }
 
     private void requestUpdates(String provider) {
-        switch (provider){
-            case LocationManager.NETWORK_PROVIDER :
-                requestUpdateNetwork(provider);
-                break;
-            case LocationManager.GPS_PROVIDER :
+        if(provider.equals(LocationManager.NETWORK_PROVIDER)) {
+            requestUpdateNetwork(provider);
+        }else {
+            if(provider.equals(LocationManager.GPS_PROVIDER)) {
                 requestUpdateGPS(provider);
-                break;
-            default:
+            }else {
                 this.onProviderDisabled(provider);
-                break;
+            }
         }
     }
 
