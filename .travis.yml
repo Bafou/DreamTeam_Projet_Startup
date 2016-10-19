@@ -5,3 +5,4 @@ android:
     - build-tools-23.0.2
     - android-23
     - extra-android-m2repository
+after_failure: "cat /home/travis/build/Bafou/PVviter/app/build/outputs/lint-results.xml"
