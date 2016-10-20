@@ -17,11 +17,6 @@ allprojects {
         jcenter()
     }
 	
-	adbOptions {
-		timeOutInMs 10 * 60 * 1000  // 10 minutes
-		installOptions "-d","-t"
-	}
-	
 	apply plugin: 'checkstyle'
 	checkstyle {
 		configFile = new File("${project.projectDir}", "checkstyle.xml")
