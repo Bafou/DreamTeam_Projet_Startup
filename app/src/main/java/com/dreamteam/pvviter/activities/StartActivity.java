@@ -1,5 +1,7 @@
 package com.dreamteam.pvviter.activities;
 
+import android.content.Context;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -8,10 +10,20 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.dreamteam.pvviter.R;
 
-public class StartActivity extends AppCompatActivity {
+import services.Locator;
+
+import static services.Locator.Method.GPS;
+import static services.Locator.Method.NETWORK;
+import static services.Locator.Method.NETWORK_THEN_GPS;
+
+public class StartActivity extends AppCompatActivity implements Locator.Listener {
+
+    private Double latitude = null;
+    private Double longitude = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,14 +32,7 @@ public class StartActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+
     }
 
     @Override
@@ -50,5 +55,47 @@ public class StartActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * Used to save the location
+     *
+     * @param view
+     */
+    public void saveLocation(View view) {
+        Locator locator = new Locator(this.getApplicationContext());
+        //getLocation is used to get the location into our implemented Listener methods onLocationFound - onLocationNotFound
+        locator.getLocation(GPS, this);
+        if (this.latitude != null && this.longitude != null) {
+            //TODO: send latitude and longitude to the right activity (map?)
+        }
+    }
+
+    /**
+     * directly save the location in our private variable latitude and longitude
+     *
+     * @param location
+     */
+    @Override
+    public void onLocationFound(Location location) {
+        this.latitude = location.getLatitude();
+        this.longitude = location.getLongitude();
+
+        Context context = getApplicationContext();
+        CharSequence text = "Position : latitude : " + latitude + " longitude : " + longitude;
+        int duration = Toast.LENGTH_SHORT;
+
+        Toast toast = Toast.makeText(context, text, duration);
+        toast.show();
+    }
+
+    @Override
+    public void onLocationNotFound() {
+        Context context = getApplicationContext();
+        CharSequence text = "Impossible de récupérer la position.";
+        int duration = Toast.LENGTH_SHORT;
+
+        Toast toast = Toast.makeText(context, text, duration);
+        toast.show();
     }
 }
