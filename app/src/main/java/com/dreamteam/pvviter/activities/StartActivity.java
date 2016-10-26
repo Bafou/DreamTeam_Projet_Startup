@@ -1,11 +1,15 @@
 package com.dreamteam.pvviter.activities;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -65,10 +69,21 @@ public class StartActivity extends AppCompatActivity implements Locator.Listener
      */
     public void saveLocation(View view) {
         Locator locator = new Locator(this.getApplicationContext());
-        //getLocation is used to get the location into our implemented Listener methods onLocationFound - onLocationNotFound
-        locator.getLocation(GPS, this);
+
+        if (locator.isEnableGPS()){
+            //Log.d("saveLocation","gps active" );
+
+            //getLocation is used to get the location into our implemented Listener methods onLocationFound - onLocationNotFound
+            locator.getLocation(GPS, this);
+
+        }else{
+            GPSDisabledAlert();
+        }
+
+
         if (this.latitude != null && this.longitude != null) {
             //TODO: send latitude and longitude to the right activity (map?)
+            Log.d("saveLocation", this.latitude+";"+this.longitude);
         }
     }
 
@@ -90,6 +105,9 @@ public class StartActivity extends AppCompatActivity implements Locator.Listener
         toast.show();
     }
 
+    /**
+     * the lcoation gps can't be found, a message is show
+     */
     @Override
     public void onLocationNotFound() {
         Context context = getApplicationContext();
@@ -98,5 +116,30 @@ public class StartActivity extends AppCompatActivity implements Locator.Listener
 
         Toast toast = Toast.makeText(context, text, duration);
         toast.show();
+    }
+
+    /**
+     * show message for enable gps
+     */
+    private void GPSDisabledAlert(){
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+        alertDialogBuilder.setMessage("Le GPS est désactivé. Voulez-vous l'activer ?")
+                .setCancelable(false)
+                .setPositiveButton("OK",
+                        new DialogInterface.OnClickListener(){
+                            public void onClick(DialogInterface dialog, int id){
+                                Intent callGPSSettingIntent = new Intent(
+                                        android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                                startActivity(callGPSSettingIntent);
+                            }
+                        });
+        alertDialogBuilder.setNegativeButton("Quitter",
+                new DialogInterface.OnClickListener(){
+                    public void onClick(DialogInterface dialog, int id){
+                        dialog.cancel();
+                    }
+                });
+        AlertDialog alert = alertDialogBuilder.create();
+        alert.show();
     }
 }

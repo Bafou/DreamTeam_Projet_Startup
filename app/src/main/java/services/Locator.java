@@ -45,6 +45,15 @@ public class Locator implements LocationListener {
         this.locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
     }
 
+    /**
+     * the gps is Enable
+     * @return true if gps is enable, else false
+     */
+    public boolean isEnableGPS() {
+        return this.locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+    }
+
+
     public void getLocation(Locator.Method method, Locator.Listener callback) {
         this.method = method;
         this.callback = callback;
@@ -76,6 +85,7 @@ public class Locator implements LocationListener {
             Log.d(LOG_TAG, "Last known location found for GPS provider : " + gpsLocation.toString());
             this.callback.onLocationFound(gpsLocation);
         } else {
+
             Log.d(LOG_TAG, "Request updates from GPS provider.");
             this.requestUpdates(LocationManager.GPS_PROVIDER);
         }
