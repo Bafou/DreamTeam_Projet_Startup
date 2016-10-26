@@ -7,8 +7,6 @@ import android.content.Intent;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -22,8 +20,6 @@ import com.dreamteam.pvviter.R;
 import services.Locator;
 
 import static services.Locator.Method.GPS;
-import static services.Locator.Method.NETWORK;
-import static services.Locator.Method.NETWORK_THEN_GPS;
 
 public class StartActivity extends AppCompatActivity implements Locator.Listener {
 
@@ -54,9 +50,13 @@ public class StartActivity extends AppCompatActivity implements Locator.Listener
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        switch (id) {
+            case R.id.action_settings:
+                return true;
+            case R.id.action_getMap:
+                //Temporary menu to test the map
+                Intent intent = new Intent(this, MapActivity.class);
+                startActivity(intent);
         }
 
         return super.onOptionsItemSelected(item);
