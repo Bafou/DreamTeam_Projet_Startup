@@ -9,7 +9,10 @@ android:
 
 env:
   global:
-    - ADB_INSTALL_TIMEOUT=8 
+    - ADB_INSTALL_TIMEOUT=12 
+    
+notifications:
+  slack: pvviter:FfofyWM6YJq0LkHC39aespW4
 
 # Emulator Management: Create, Start and Wait
 before_script:
