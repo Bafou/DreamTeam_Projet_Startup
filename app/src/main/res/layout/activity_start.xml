@@ -39,7 +39,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="100dp"
-            android:gravity="center">
+            android:gravity="center"
+            android:weightSum="1">
 
             <Button
                 android:text="@string/button_save_position_text"
@@ -48,6 +49,17 @@
                 android:id="@+id/buttonSavePosition"
                 android:onClick="saveLocation"
                 android:textColor="@color/colorPrimary" />
+
+            <ImageButton
+                android:layout_width="29dp"
+                android:layout_height="29dp"
+                android:id="@+id/imageButton"
+                android:src="@drawable/help"
+                android:background="@android:color/transparent"
+                android:scaleType="fitCenter"
+                android:layout_marginLeft="20dp"
+                android:nestedScrollingEnabled="false"
+                android:onClick="displayHelpPopUp" />
 
             <Button
                 android:layout_width="wrap_content"

@@ -28,6 +28,10 @@ public class StartActivity extends Activity implements Locator.Listener {
         setContentView(R.layout.activity_start);
     }
 
+    /**
+     * Open the map activity
+     * @param view
+     */
     public void openMapActivity(View view){
         Intent intent = new Intent(this, MapActivity.class);
         startActivity(intent);
@@ -82,7 +86,7 @@ public class StartActivity extends Activity implements Locator.Listener {
     @Override
     public void onLocationNotFound() {
         Context context = getApplicationContext();
-        CharSequence text = "Impossible de récupérer la position.";
+        CharSequence text = getString(R.string.gps_not_functionnal);
         int duration = Toast.LENGTH_SHORT;
 
         Toast toast = Toast.makeText(context, text, duration);
@@ -94,7 +98,7 @@ public class StartActivity extends Activity implements Locator.Listener {
      */
     private void GPSDisabledAlert(){
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-        alertDialogBuilder.setMessage("Le GPS est désactivé. Voulez-vous l'activer ?")
+        alertDialogBuilder.setMessage(R.string.gps_activation_authorization)
                 .setCancelable(false)
                 .setPositiveButton("OK",
                         new DialogInterface.OnClickListener(){
@@ -110,6 +114,23 @@ public class StartActivity extends Activity implements Locator.Listener {
                         dialog.cancel();
                     }
                 });
+        AlertDialog alert = alertDialogBuilder.create();
+        alert.show();
+    }
+
+    /**
+     * Display a pop-up to help the user with explanation messages.
+     */
+    public void displayHelpPopUp(View view){
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+        alertDialogBuilder.setMessage(getString(R.string.start_page_text_1) + "\r\n\n" + getString(R.string.start_page_text_2))
+                .setCancelable(false)
+                .setPositiveButton("OK",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        });
         AlertDialog alert = alertDialogBuilder.create();
         alert.show();
     }
