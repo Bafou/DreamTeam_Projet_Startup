@@ -1,18 +1,14 @@
 package com.dreamteam.pvviter.activities;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Location;
-import android.location.LocationManager;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.dreamteam.pvviter.R;
@@ -21,7 +17,7 @@ import services.Locator;
 
 import static services.Locator.Method.GPS;
 
-public class StartActivity extends AppCompatActivity implements Locator.Listener {
+public class StartActivity extends Activity implements Locator.Listener {
 
     private Double latitude = null;
     private Double longitude = null;
@@ -30,36 +26,11 @@ public class StartActivity extends AppCompatActivity implements Locator.Listener
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_start, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        switch (id) {
-            case R.id.action_settings:
-                return true;
-            case R.id.action_getMap:
-                //Temporary menu to test the map
-                Intent intent = new Intent(this, MapActivity.class);
-                startActivity(intent);
-        }
-
-        return super.onOptionsItemSelected(item);
+    public void openMapActivity(View view){
+        Intent intent = new Intent(this, MapActivity.class);
+        startActivity(intent);
     }
 
     /**
