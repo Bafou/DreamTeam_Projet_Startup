@@ -22,7 +22,7 @@ android {
     productFlavors {
     }	
 	adbOptions {
-		timeOutInMs 10 * 60 * 1000  // 10 minutes
+		timeOutInMs 20 * 60 * 1000  // 10 minutes
 		installOptions "-d","-t"
 	}
 }
