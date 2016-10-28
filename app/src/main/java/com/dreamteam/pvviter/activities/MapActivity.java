@@ -13,17 +13,13 @@ import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 
-import services.Locator;
+import utils.MapFunctions;
 
 public class MapActivity extends AppCompatActivity {
-
-    private Locator locator;
 
     @Override public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
-
-        locator = new Locator(this);
 
         /*
          * The user ID is set to prevent getting banned from the osm servers
@@ -37,7 +33,18 @@ public class MapActivity extends AppCompatActivity {
         map.setMultiTouchControls(true);
 
         IMapController mapController = map.getController();
-        mapController.setZoom(9);
+        mapController.setZoom(17);
+
+        //Default location
+        GeoPoint startPoint = new GeoPoint(50.633333, 3.066667); //Lille, France
+        GeoPoint endPoint = new GeoPoint(50.636333, 3.069647); //Still Lille, France
+
+        mapController.setCenter(startPoint);
+
+        MapFunctions.addPoint(map, startPoint);
+        MapFunctions.addPoint(map, endPoint);
+
+        MapFunctions.drawRoute(map, startPoint, endPoint);
     }
 
     @Override
