@@ -5,6 +5,8 @@
     <string name="start_page_text_2">Cela permettra à l\'aplication de calculer l\'itinéraire vers votre véhicule par la suite</string>
     <string name="button_save_position_text">Enregistrer la position</string>
     <string name="title_activity_map">MapActivity</string>
+    <string name="gps_not_functionnal">"Impossible de récupérer la position."</string>
+    <string name="gps_activation_authorization">"Le GPS est désactivé. Voulez-vous l'activer ?"</string>
 
     <string name="hello_world">Hello world!</string>
     <string name="action_getMap">Afficher la carte</string>
