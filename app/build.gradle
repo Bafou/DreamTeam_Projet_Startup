@@ -35,5 +35,9 @@ dependencies {
 
     //osmdroid dependencies
     compile 'org.osmdroid:osmdroid-android:5.5:release@aar'
+    //https://github.com/ShawnLin013/NumberPicker
+    //personalised number picker
+    compile 'com.shawnlin:number-picker:2.1.0'
     compile 'com.github.MKergall:osmbonuspack:6.0'
+
 }

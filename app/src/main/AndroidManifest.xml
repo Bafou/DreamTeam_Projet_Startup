@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.dreamteam.pvviter" >
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.dreamteam.pvviter">
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
@@ -11,11 +12,12 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="false"
-        android:theme="@style/AppTheme" >
+        tools:replace="android:supportsRtl"
+        android:theme="@style/AppTheme">
         <activity
             android:name=".activities.StartActivity"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar" >
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -24,7 +26,11 @@
         </activity>
         <activity
             android:name=".activities.MapActivity"
-            android:label="@string/title_activity_map" >
+            android:label="@string/title_activity_map"/>
+        <activity
+            android:name=".activities.TimeStampActivity"
+            android:label="@string/title_activity_time_stamp"
+            android:theme="@style/AppTheme.NoActionBar">
         </activity>
     </application>
 
