@@ -25,6 +25,7 @@ public class TimeStampActivity extends AppCompatActivity implements NumberPicker
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        overridePendingTransition(R.anim.fadein, R.anim.fadeout);
         setContentView(R.layout.activity_time_stamp);
 
         customHoursNumberPicker();
@@ -121,6 +122,11 @@ public class TimeStampActivity extends AppCompatActivity implements NumberPicker
     public void openMapActivity(View view){
         Intent intent = new Intent(this, MapActivity.class);
         startActivity(intent);
+    }
+
+    @Override
+    public void onBackPressed() {
+        moveTaskToBack(true);
     }
 
 
