@@ -54,6 +54,7 @@
                     android:layout_height="60dp"
                     android:layout_centerHorizontal="true"
                     android:layout_centerVertical="true"
+                    android:background="@drawable/roundedbutton"
                     android:onClick="saveLocation"
                     android:textColor="@color/colorPrimary" />
 

@@ -88,30 +88,57 @@
                     app:np_textSize="30dp" />
             </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="wrap_content"
+
+            <RelativeLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginTop="30dp">
-                <View
-                    android:layout_width="fill_parent"
-                    android:layout_height="0.2dp"
-                    android:visibility="visible"
-                    android:background="@color/white"/>
-                <TextView
-                    android:id="@+id/time_stamp_end"
+                android:layout_marginTop="30dp"
+                android:onClick="openTimePickerDialog"
+                >
+
+
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/white"
-                    android:text="@string/time_stamp_end"
-                    android:textSize="20sp"
-                    />
-                <View
-                    android:layout_width="fill_parent"
-                    android:layout_height="0.2dp"
-                    android:visibility="visible"
-                    android:background="@color/white"/>
-            </LinearLayout>
+                    android:orientation="vertical"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
+                    android:id="@+id/time_stamp_end_layout">
+
+                    <View
+                        android:layout_width="fill_parent"
+                        android:layout_height="0.2dp"
+                        android:visibility="visible"
+                        android:background="@color/white"/>
+
+                    <TextView
+                        android:id="@+id/time_stamp_end"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/white"
+                        android:text="@string/time_stamp_end"
+                        android:textSize="20sp"
+                        />
+                    <View
+                        android:layout_width="fill_parent"
+                        android:layout_height="0.2dp"
+                        android:visibility="visible"
+                        android:background="@color/white"/>
+                </LinearLayout>
+
+                <ImageButton
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_centerVertical="true"
+                    android:background="@null"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/edit_icon"
+                    android:layout_toRightOf="@id/time_stamp_end_layout"
+                    android:onClick="openTimePickerDialog"/>
+
+
+            </RelativeLayout>
         </LinearLayout>
 
         <LinearLayout
@@ -128,6 +155,7 @@
                 android:gravity="center"
                 android:background="@null"
                 android:scaleType="centerCrop"
+                android:onClick="takeAPicture"
                 android:src="@drawable/camera_icon"/>
 
             <Button

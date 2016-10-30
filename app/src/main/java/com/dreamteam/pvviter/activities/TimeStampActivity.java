@@ -1,26 +1,35 @@
 package com.dreamteam.pvviter.activities;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import com.shawnlin.numberpicker.NumberPicker;
 import com.dreamteam.pvviter.R;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.Locale;
+import fragments.TimePickerFragment;
+import utils.DateManipulation;
 
+
+/**
+ * Created by FlorianDoublet on 28/10/2016.
+ */
 public class TimeStampActivity extends AppCompatActivity implements NumberPicker.OnValueChangeListener {
 
     private NumberPicker numberPickerHours = null;
     private NumberPicker numberPickerMinutes = null;
     //minuteStepSize is the size set to get the wanted step between our minutes value
     //for example a minuteStepSize of 5 means 00 - 05 - 10 ...
-    private final int minuteStepSize = 5;
+    private static int defaultMinuteStepSize = 5;
+    private static int minuteStepSize = defaultMinuteStepSize;
+    private TimePickerFragment timePickerFragment = new TimePickerFragment();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,11 +44,20 @@ public class TimeStampActivity extends AppCompatActivity implements NumberPicker
 
     }
 
+    public NumberPicker getNumberPickerMinutes() {
+        return numberPickerMinutes;
+    }
+
+    public NumberPicker getNumberPickerHours() {
+        return numberPickerHours;
+    }
+
     /**
      * Customise the number picker for the hours
      */
     public void customHoursNumberPicker(){
         numberPickerHours = (NumberPicker)  findViewById(R.id.number_picker_hours);
+        this.minuteStepSize = defaultMinuteStepSize;
 
         assert numberPickerHours != null;
         //used to format our values with 2 numbers
@@ -75,6 +93,16 @@ public class TimeStampActivity extends AppCompatActivity implements NumberPicker
         numberPickerMinutes.setOnValueChangedListener(this);
     }
 
+    /**
+     * Change the step value before the customisation
+     * @param minuteStepSize
+     */
+    public void customMinutesNumberPicker(int minuteStepSize){
+        this.minuteStepSize = minuteStepSize;
+        this.numberPickerMinutes.setMaxValue(59);
+        customMinutesNumberPicker();
+    }
+
     @Override
     public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
         updateTimeStampEndValue();
@@ -86,10 +114,18 @@ public class TimeStampActivity extends AppCompatActivity implements NumberPicker
     public void updateTimeStampEndValue(){
         TextView timeStampEnd = (TextView) findViewById(R.id.time_stamp_end);
         String timeStampEndString = getResources().getString(R.string.time_stamp_end);
-        Calendar c = Calendar.getInstance();
-        c.add(Calendar.HOUR_OF_DAY, numberPickerHours.getValue());
-        c.add(Calendar.MINUTE, numberPickerMinutes.getValue()*minuteStepSize);
-        timeStampEndString += " " + dateHourMinuteToString(c.getTime());
+        Calendar newCal = Calendar.getInstance();
+
+        int hoursToAdd = numberPickerHours.getValue();
+        int minutesToAdd = numberPickerMinutes.getValue()*minuteStepSize;
+        newCal.add(Calendar.HOUR_OF_DAY, hoursToAdd);
+        newCal.add(Calendar.MINUTE, minutesToAdd);
+
+        //test if it's tomorrow
+        if(DateManipulation.isTomorrow(newCal)){
+            timeStampEndString += " " + getResources().getString(R.string.tomorrow_sentence);
+        }
+        timeStampEndString += " " + DateManipulation.dateHourMinuteToString(newCal.getTime());
         assert timeStampEnd != null;
         timeStampEnd.setText(timeStampEndString);
 
@@ -98,21 +134,6 @@ public class TimeStampActivity extends AppCompatActivity implements NumberPicker
         if(validateButton.getVisibility() == View.GONE) validateButton.setVisibility(View.VISIBLE);
     }
 
-    /**
-     * Concert a date into a string (only for hours and minutes)
-     * @param date
-     * @return
-     */
-    public String dateHourMinuteToString(Date date) {
-        SimpleDateFormat formatter = new SimpleDateFormat("H:mm", Locale.FRANCE);
-        String date_s = null;
-        try {
-            date_s = formatter.format(date);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return date_s;
-    }
 
     /**
      * Open the map activity
@@ -121,6 +142,22 @@ public class TimeStampActivity extends AppCompatActivity implements NumberPicker
     public void openMapActivity(View view){
         Intent intent = new Intent(this, MapActivity.class);
         startActivity(intent);
+    }
+
+    public void openTimePickerDialog(View view){
+        timePickerFragment.setTimeStampActivity(this);
+        timePickerFragment.show(getFragmentManager(), "timePicker");
+    }
+
+    public void takeAPicture(View view){
+        Context context = getApplicationContext();
+        CharSequence text = "Click click :D";
+        int duration = Toast.LENGTH_SHORT;
+
+        Toast toast = Toast.makeText(context, text, duration);
+        toast.show();
+
+        //TODO: implement here the photo activity
     }
 
 
