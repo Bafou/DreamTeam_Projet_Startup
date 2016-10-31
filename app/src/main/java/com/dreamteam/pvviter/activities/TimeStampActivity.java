@@ -52,6 +52,10 @@ public class TimeStampActivity extends AppCompatActivity implements NumberPicker
         return numberPickerHours;
     }
 
+    public static int getMinuteStepSize() {
+        return minuteStepSize;
+    }
+
     /**
      * Customise the number picker for the hours
      */

@@ -32,7 +32,7 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
         // Use the current time as the default values for the picker
         Calendar c = Calendar.getInstance();
         c.add(Calendar.HOUR_OF_DAY, timeStampActivity.getNumberPickerHours().getValue());
-        c.add(Calendar.MINUTE, timeStampActivity.getNumberPickerMinutes().getValue());
+        c.add(Calendar.MINUTE, timeStampActivity.getNumberPickerMinutes().getValue() * TimeStampActivity.getMinuteStepSize());
         int hour = c.get(Calendar.HOUR_OF_DAY);
         int minute = c.get(Calendar.MINUTE);
 
@@ -59,6 +59,11 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
         if( (elapsedMinutes % 5 ) != 0){
             this.timeStampActivity.customMinutesNumberPicker(1);
         }
+
+        if(elapsedMinutes < 0 && elapsedHours <= 0){
+                elapsedHours -= 1;
+        }
+
         this.timeStampActivity.getNumberPickerHours().setValue(elapsedHours);
         this.timeStampActivity.getNumberPickerMinutes().setValue(elapsedMinutes);
         this.timeStampActivity.updateTimeStampEndValue();
