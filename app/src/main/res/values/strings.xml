@@ -12,4 +12,5 @@
     <string name="time_stamp_end">Heure de fin :</string>
     <string name="title_activity_time_stamp">TimeStampActivity</string>
     <string name="validate_button">valider</string>
+    <string name="tomorrow_sentence">demain à</string>
 </resources>
