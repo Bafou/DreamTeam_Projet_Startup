@@ -25,16 +25,8 @@ public class StartActivity extends Activity implements Locator.Listener {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        overridePendingTransition(R.anim.fadein, R.anim.fadeout);
         setContentView(R.layout.activity_start);
-    }
-
-    /**
-     * Open the map activity
-     * @param view
-     */
-    public void openMapActivity(View view){
-        Intent intent = new Intent(this, MapActivity.class);
-        startActivity(intent);
     }
 
     /**
@@ -59,6 +51,8 @@ public class StartActivity extends Activity implements Locator.Listener {
         if (this.latitude != null && this.longitude != null) {
             //TODO: send latitude and longitude to the right activity (map?)
             Log.d("saveLocation", this.latitude+";"+this.longitude);
+            Intent intent = new Intent(this, TimeStampActivity.class);
+            startActivity(intent);
         }
     }
 
@@ -71,13 +65,6 @@ public class StartActivity extends Activity implements Locator.Listener {
     public void onLocationFound(Location location) {
         this.latitude = location.getLatitude();
         this.longitude = location.getLongitude();
-
-        Context context = getApplicationContext();
-        CharSequence text = "Position : latitude : " + latitude + " longitude : " + longitude;
-        int duration = Toast.LENGTH_SHORT;
-
-        Toast toast = Toast.makeText(context, text, duration);
-        toast.show();
     }
 
     /**

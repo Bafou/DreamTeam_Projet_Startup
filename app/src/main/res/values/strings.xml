@@ -7,7 +7,10 @@
     <string name="title_activity_map">MapActivity</string>
     <string name="gps_not_functionnal">"Impossible de récupérer la position."</string>
     <string name="gps_activation_authorization">"Le GPS est désactivé. Voulez-vous l'activer ?"</string>
-
-    <string name="hello_world">Hello world!</string>
     <string name="action_getMap">Afficher la carte</string>
+    <string name="timeDelimiter">:</string>
+    <string name="time_stamp_end">Heure de fin :</string>
+    <string name="title_activity_time_stamp">TimeStampActivity</string>
+    <string name="validate_button">valider</string>
+    <string name="tomorrow_sentence">demain à</string>
 </resources>

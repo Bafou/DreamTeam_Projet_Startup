@@ -12,15 +12,28 @@ import org.osmdroid.api.IMapController;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
-
+import services.Compass;
 import utils.MapFunctions;
 
-public class MapActivity extends AppCompatActivity {
+public class MapActivity extends AppCompatActivity{
 
-    @Override public void onCreate(Bundle savedInstanceState) {
+    private MapView map;
+    private Compass compass;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        overridePendingTransition(R.anim.fadein, R.anim.fadeout);
         setContentView(R.layout.activity_map);
 
+        initMap();
+        setupCompass();
+    }
+
+    /**
+     * Initialize the map to it's default behavior
+     */
+    private void initMap() {
         /*
          * The user ID is set to prevent getting banned from the osm servers
          * It must be set to a unique application ID and not a user ID
@@ -29,8 +42,9 @@ public class MapActivity extends AppCompatActivity {
 
         MapView map = (MapView) findViewById(R.id.map);
         map.setTileSource(TileSourceFactory.MAPNIK);
-        map.setBuiltInZoomControls(true);
         map.setMultiTouchControls(true);
+        map.setMaxZoomLevel(19);
+        map.setClickable(false);
 
         IMapController mapController = map.getController();
         mapController.setZoom(17);
@@ -41,10 +55,21 @@ public class MapActivity extends AppCompatActivity {
 
         mapController.setCenter(startPoint);
 
-        MapFunctions.addPoint(map, startPoint);
-        MapFunctions.addPoint(map, endPoint);
+        MapFunctions.addCurrentPositionPoint(map, startPoint);
+        MapFunctions.addCarPoint(map, endPoint);
 
         MapFunctions.drawRoute(map, startPoint, endPoint);
+
+        this.map = map;
+    }
+
+
+    /**
+     * Initialize the orientation listener needed by the map to point in the director of the phone
+     */
+    private void setupCompass() {
+        compass = new Compass(map);
+        compass.startListeningToSensors();
     }
 
     @Override
@@ -67,5 +92,10 @@ public class MapActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        moveTaskToBack(true);
     }
 }

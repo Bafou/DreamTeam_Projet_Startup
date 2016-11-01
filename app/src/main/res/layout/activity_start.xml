@@ -42,33 +42,37 @@
             android:gravity="center"
             android:weightSum="1">
 
-            <Button
-                android:text="@string/button_save_position_text"
-                android:layout_width="250dp"
-                android:layout_height="60dp"
-                android:id="@+id/buttonSavePosition"
-                android:onClick="saveLocation"
-                android:textColor="@color/colorPrimary" />
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                >
 
-            <ImageButton
-                android:layout_width="29dp"
-                android:layout_height="29dp"
-                android:id="@+id/imageButton"
-                android:src="@drawable/help"
-                android:background="@android:color/transparent"
-                android:scaleType="fitCenter"
-                android:layout_marginLeft="20dp"
-                android:nestedScrollingEnabled="false"
-                android:onClick="displayHelpPopUp" />
+                <Button
+                    android:id="@+id/buttonSavePosition"
+                    android:text="@string/button_save_position_text"
+                    android:layout_width="250dp"
+                    android:layout_height="60dp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
+                    android:background="@drawable/roundedbutton"
+                    android:onClick="saveLocation"
+                    android:textColor="@color/colorPrimary" />
 
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Carte"
-                android:id="@+id/button"
-                android:textColor="@color/colorPrimary"
-                android:nestedScrollingEnabled="false"
-                android:onClick="openMapActivity" />
+                <ImageButton
+                    android:layout_width="29dp"
+                    android:layout_height="29dp"
+                    android:id="@+id/imageButton"
+                    android:src="@drawable/help"
+                    android:background="@android:color/transparent"
+                    android:layout_centerVertical="true"
+                    android:layout_toRightOf="@id/buttonSavePosition"
+                    android:scaleType="fitCenter"
+                    android:layout_marginLeft="20dp"
+                    android:nestedScrollingEnabled="false"
+                    android:onClick="displayHelpPopUp" />
+
+            </RelativeLayout>
+
 
         </LinearLayout>
 
