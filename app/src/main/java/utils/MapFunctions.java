@@ -6,11 +6,13 @@ import android.support.v4.content.ContextCompat;
 import com.dreamteam.pvviter.R;
 
 import org.osmdroid.bonuspack.routing.MapQuestRoadManager;
+import org.osmdroid.bonuspack.routing.OSRMRoadManager;
 import org.osmdroid.bonuspack.routing.Road;
 import org.osmdroid.bonuspack.routing.RoadManager;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.Marker;
+import org.osmdroid.views.overlay.Overlay;
 import org.osmdroid.views.overlay.Polyline;
 
 import java.util.ArrayList;
@@ -21,15 +23,15 @@ import java.util.ArrayList;
 public class MapFunctions {
 
     /**
-     * Overload method. See addPoint(MapView map, GeoPoint point).
+     * Overload method. See addCarPoint(MapView map, GeoPoint point).
      *
-     * @param map
+     * @param map The map where the point must be drawn
      * @param latitude The latitude of the point to draw
      * @param longitude The longitude of the point to draw
      * @return The marker that has been pinned to the map
      */
-    public static Marker addPoint(MapView map, double latitude, double longitude) {
-        return addPoint(map, new GeoPoint(latitude, longitude));
+    public static Marker addCarPoint(MapView map, double latitude, double longitude) {
+        return addCarPoint(map, new GeoPoint(latitude, longitude));
     }
 
     /**
@@ -39,11 +41,43 @@ public class MapFunctions {
      * @param point The location of the point to draw
      * @return The marker that has been pinned to the map
      */
-    public static Marker addPoint(MapView map, GeoPoint point) {
+    public static Marker addCarPoint(MapView map, GeoPoint point) {
         Marker marker = new Marker(map);
         marker.setPosition(point);
         marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
-        marker.setIcon(ContextCompat.getDrawable(map.getContext(), R.drawable.marker));
+        marker.setIcon(ContextCompat.getDrawable(map.getContext(), R.drawable.car_marker));
+
+        map.getOverlays().add(marker);
+
+        refreshMap(map);
+
+        return marker;
+    }
+
+    /**
+     * Overload method. See addCurrentPositionPoint(MapView map, GeoPoint point).
+     *
+     * @param map
+     * @param latitude The latitude of the point to draw
+     * @param longitude The longitude of the point to draw
+     * @return The marker that has been pinned to the map
+     */
+    public static Marker addCurrentPositionPoint(MapView map, double latitude, double longitude) {
+        return addCurrentPositionPoint(map, new GeoPoint(latitude, longitude));
+    }
+
+    /**
+     * Draw a point on the given map
+     *
+     * @param map The map where the point must be drawn
+     * @param point The location of the point to draw
+     * @return The marker that has been pinned to the map
+     */
+    public static Marker addCurrentPositionPoint(MapView map, GeoPoint point) {
+        Marker marker = new Marker(map);
+        marker.setPosition(point);
+        marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
+        marker.setIcon(ContextCompat.getDrawable(map.getContext(), R.drawable.man_marker));
 
         map.getOverlays().add(marker);
 
@@ -77,8 +111,10 @@ public class MapFunctions {
      * @return The drawn route
      */
     public static Polyline drawRoute(MapView map, ArrayList<GeoPoint> wayPoints) {
-        RoadManager roadManager = new MapQuestRoadManager("VdihCkmLUABBjWu0LgVvCK7Bwi6tSmUS"); //Free key from Map Quest
+        //RoadManager roadManager = new MapQuestRoadManager("VdihCkmLUABBjWu0LgVvCK7Bwi6tSmUS"); //Free key from Map Quest, 15000 free requests per month
         //roadManager.addRequestOption("routeType=pedestrian"); //Doesn't work
+
+        RoadManager roadManager = new OSRMRoadManager(map.getContext());
 
         RouteData routeData = new RouteData(map, wayPoints, roadManager);
         Road road = null;
@@ -89,11 +125,9 @@ public class MapFunctions {
             e.printStackTrace();
         }
 
-        //if (road == null) return new Polyline();
+        Polyline roadOverlay = RoadManager.buildRoadOverlay(road, Color.CYAN, 10);
 
-        Polyline roadOverlay = RoadManager.buildRoadOverlay(road, Color.BLUE, 10);
-
-        map.getOverlays().add(roadOverlay);
+        map.getOverlays().add(0, roadOverlay);
 
         refreshMap(map);
 
@@ -130,6 +164,19 @@ public class MapFunctions {
     }
 
     /**
+     * Removes every route on the map
+     *
+     * @param map The concerned map
+     */
+    public static void removeAllRoutes(MapView map) {
+        for (Overlay o : map.getOverlays()) {
+            if(o instanceof Polyline) map.getOverlays().remove(o);
+        }
+
+        refreshMap(map);
+    }
+
+    /**
      * Removes a drawn point.
      *
      * @param map The concerned map
@@ -137,6 +184,19 @@ public class MapFunctions {
      */
     public static void removeMarker(MapView map, Marker marker) {
         map.getOverlays().remove(marker);
+        refreshMap(map);
+    }
+
+    /**
+     * Removes every marker on the map
+     *
+     * @param map The concerned map
+     */
+    public static void removeAllMarkers(MapView map) {
+        for (Overlay o : map.getOverlays()) {
+            if(o instanceof Marker) map.getOverlays().remove(o);
+        }
+
         refreshMap(map);
     }
 }
