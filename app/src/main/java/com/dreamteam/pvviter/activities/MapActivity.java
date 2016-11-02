@@ -4,16 +4,22 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 import com.dreamteam.pvviter.BuildConfig;
 import com.dreamteam.pvviter.R;
 
 import org.osmdroid.api.IMapController;
+import org.osmdroid.bonuspack.routing.Road;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
+
 import services.Compass;
+import utils.Convertion;
 import utils.MapFunctions;
+import utils.MathCalcul;
+import utils.Settings;
 
 public class MapActivity extends AppCompatActivity{
 
@@ -28,6 +34,16 @@ public class MapActivity extends AppCompatActivity{
 
         initMap();
         setupCompass();
+    }
+
+    /**
+     * Add informations on the map view
+     * @param distance the distance of the route
+     * @param time the time for travel the route
+     */
+    private void addInfosOnMap(String distance, String time){
+        TextView infosMap = (TextView) findViewById(R.id.infosMap);
+        infosMap.setText("Distance : " + distance +" , Temps : " + time);
     }
 
     /**
@@ -58,9 +74,17 @@ public class MapActivity extends AppCompatActivity{
         MapFunctions.addCurrentPositionPoint(map, startPoint);
         MapFunctions.addCarPoint(map, endPoint);
 
-        MapFunctions.drawRoute(map, startPoint, endPoint);
+        //MapFunctions.drawRoute(map, startPoint, endPoint);
+        Road road = MapFunctions.getRoad(map, startPoint, endPoint );
+        Double distance = road.mLength;
+        Double time = MathCalcul.getTime(distance, Settings.SPEED);
+        MapFunctions.drawRoute(map, road );
+
+        this.addInfosOnMap(Convertion.lengthToString(distance), Convertion.timeInString(time));
 
         this.map = map;
+
+
     }
 
 
