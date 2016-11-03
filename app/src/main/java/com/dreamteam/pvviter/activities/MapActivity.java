@@ -42,8 +42,11 @@ public class MapActivity extends AppCompatActivity{
      * @param time the time for travel the route
      */
     private void addInfosOnMap(String distance, String time){
-        TextView infosMap = (TextView) findViewById(R.id.infosMap);
-        infosMap.setText("Distance : " + distance +" , Temps : " + time);
+        TextView distance_route = (TextView) findViewById(R.id.distance_route);
+        distance_route.setText(distance);
+
+        TextView time_route = (TextView) findViewById(R.id.time_route);
+        time_route.setText(time);
     }
 
     /**

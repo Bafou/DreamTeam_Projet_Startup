@@ -13,4 +13,7 @@
     <string name="title_activity_time_stamp">TimeStampActivity</string>
     <string name="validate_button">valider</string>
     <string name="tomorrow_sentence">demain à</string>
+    <string name="time_car_label">Durée restante</string>
+    <string name="distance_route_label">Distance</string>
+    <string name="time_route_label">Temps trajet</string>
 </resources>
