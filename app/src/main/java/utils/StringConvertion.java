@@ -4,19 +4,19 @@ package utils;
  * Created by remi on 02/11/2016.
  */
 
-public class Convertion {
+public class StringConvertion {
 
     /**
      * Convert the time in string
      * @param time time in hours
      * @return the string represent the time
      */
-    public static String timeInString(double time){
+    public static String timeToString(double time){
         int hours = (int) time;
         double dMin= (time-hours)*60;
         int min = (int) dMin;
-        double minArrond = (dMin-min);
-        if(minArrond>=0.5){
+        double seconds = (dMin-min);
+        if(seconds>0.0){
             min=min+1;
         }
 
