@@ -16,7 +16,7 @@ import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 
 import services.Compass;
-import utils.StringConvertion;
+import utils.StringConversion;
 import utils.MapFunctions;
 import utils.MathCalcul;
 import utils.Settings;
@@ -83,7 +83,7 @@ public class MapActivity extends AppCompatActivity{
         Double time = MathCalcul.getTime(distance, Settings.SPEED);
         MapFunctions.drawRoute(map, road );
 
-        this.addInfosOnMap(StringConvertion.lengthToString(distance), StringConvertion.timeToString(time));
+        this.addInfosOnMap(StringConversion.lengthToString(distance), StringConversion.timeToString(time));
 
         this.map = map;
 

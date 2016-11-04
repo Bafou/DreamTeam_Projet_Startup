@@ -4,7 +4,7 @@ package utils;
  * Created by remi on 02/11/2016.
  */
 
-public class StringConvertion {
+public class StringConversion {
 
     /**
      * Convert the time in string
