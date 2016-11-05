@@ -7,6 +7,15 @@ android:
     - extra-android-m2repository
     - sys-img-armeabi-v7a-android-21
 
+deploy:
+  - provider: releases
+    api_key:
+    #put the key here  
+    file: app/build/outputs/apk/app-release.apk
+    on:
+      repo: Bafou/PVviter
+      tags: true
+
 env:
   global:
     - ADB_INSTALL_TIMEOUT=12 
