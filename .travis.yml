@@ -16,6 +16,9 @@ deploy:
   on :
     all_branches: true
 
+after_success:
+- sh set_tags.sh
+
 env:
   global:
   - ADB_INSTALL_TIMEOUT=12
