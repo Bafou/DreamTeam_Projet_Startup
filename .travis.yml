@@ -6,6 +6,7 @@ android:
   - android-23
   - extra-android-m2repository
   - sys-img-armeabi-v7a-android-21
+
 deploy:
   provider: releases
   api_key:
@@ -13,7 +14,7 @@ deploy:
   file: yourapp/build/outputs/apk/yourapp*release*.apk
   on:
     repo: Bafou/PVviter
-    branch: continuous_integration
+
 env:
   global:
   - ADB_INSTALL_TIMEOUT=12
