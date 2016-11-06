@@ -12,8 +12,10 @@ deploy:
   api_key:
     secure: fCv4hvNGPLPAkuUtt3AJbVg+irglSIK+K1tqzTpXLj24CP/CfYgcLVrcitucpBEhuJKvQ24Yiho2sUrrNr7tZt8UKL2TLnD9KKSr4jJb9U6bvqsQoBe7DrmHhqJN6QSUgJGg97RXoelMJyMCe4ZXZiHcqoBiQGs5Lxrz+CyTZB6nTSzXOwiMMBTT6fBG0zHaUCRBTgmzzuulsSLnC78bf6Y8YMmBRE2NCvg6B5B7UePma184dBSzuW6ADmccEhFb8SZSAA/rIwNJ3EXis1ToM5CtcMHav+z5oFYLcX6vuMAFgJN2CatKDEVyTkQVBYo4tellvlkCfdBbviwh1FLJ0bUlTewFv3WxFUwvvSyFECaBzz5ToUDgA7BiA71clfa2t5hPh65LJay2NO6OgWBljwX/vL6cQqqgOEHy8XPNfrh1qmsNnjv7i7GpXQsirUG+GkvvwtFFbMYIfZ2kvcRHv6/aohr+pF/22bLXRXPwLQHSrPArhZiigSN1eTnFcEMRzxN7UgX1wIwAECiJXih33Dzg5Jhh/D/Cnuimzeajhs+l7wNBEqnhIOtpW5hWEd+KVpS7B1i5oPQSrICnJhA97juwuPb9GLu1hGP6NRtlabHT9/4RoPFqNpDWBCBv5hZ8tIYG4M4S9Gp65oiGgMMHD1SDYRjpdxmaoiPPHguppz4=
   file: yourapp/build/outputs/apk/yourapp*release*.apk
+  skip_cleanup: true
   on:
     repo: Bafou/PVviter
+    tags: true
 
 env:
   global:
