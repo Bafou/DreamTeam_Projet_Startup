@@ -1,24 +1,44 @@
 package com.dreamteam.pvviter.activities;
 
+import android.content.Context;
+import android.location.Location;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.dreamteam.pvviter.BuildConfig;
 import com.dreamteam.pvviter.R;
 
 import org.osmdroid.api.IMapController;
+import org.osmdroid.bonuspack.routing.Road;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
-import services.Compass;
-import utils.MapFunctions;
 
-public class MapActivity extends AppCompatActivity{
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
+import javax.xml.datatype.Duration;
+
+import services.Compass;
+import services.Locator;
+import utils.StringConversion;
+import utils.MapFunctions;
+import utils.MathCalcul;
+import utils.Settings;
+
+public class MapActivity extends AppCompatActivity implements Locator.Listener{
 
     private MapView map;
     private Compass compass;
+    //Default location
+    private GeoPoint userLocation ;
+    private GeoPoint carLocation ;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -28,6 +48,29 @@ public class MapActivity extends AppCompatActivity{
 
         initMap();
         setupCompass();
+
+        //Create an handler to update the user location regularly.
+        final Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                updateUserLocation();
+                handler.postDelayed(this, 10000);
+            }
+        }, 10000);
+    }
+
+    /**
+     * Add informations on the map view
+     * @param distance the distance of the route
+     * @param time the time for travel the route
+     */
+    private void addInfosOnMap(String distance, String time){
+        TextView distance_route = (TextView) findViewById(R.id.distance_route);
+        distance_route.setText(distance);
+
+        TextView time_route = (TextView) findViewById(R.id.time_route);
+        time_route.setText(time);
     }
 
     /**
@@ -50,17 +93,32 @@ public class MapActivity extends AppCompatActivity{
         mapController.setZoom(17);
 
         //Default location
-        GeoPoint startPoint = new GeoPoint(50.633333, 3.066667); //Lille, France
-        GeoPoint endPoint = new GeoPoint(50.636333, 3.069647); //Still Lille, France
+        userLocation = new GeoPoint(50.633333, 3.066667); //Lille, France
+        carLocation = new GeoPoint(50.636333, 3.069647); //Still Lille, France
 
-        mapController.setCenter(startPoint);
-
-        MapFunctions.addCurrentPositionPoint(map, startPoint);
-        MapFunctions.addCarPoint(map, endPoint);
-
-        MapFunctions.drawRoute(map, startPoint, endPoint);
+        mapController.setCenter(userLocation);
 
         this.map = map;
+        updateMapCursors();
+
+    }
+
+    /**
+     * Clear the map and add the car, user location and then trace a route between then.
+     * Route data are re-calculated too
+     */
+    private void updateMapCursors(){
+        MapFunctions.clearMap(map);
+        MapFunctions.addCurrentPositionPoint(map, userLocation);
+        MapFunctions.addCarPoint(map, carLocation);
+
+        //MapFunctions.drawRoute(map, startPoint, endPoint);
+        Road road = MapFunctions.getRoad(map, userLocation, carLocation );
+        Double distance = road.mLength;
+        Double time = MathCalcul.getTime(distance, Settings.SPEED);
+        MapFunctions.drawRoute(map, road);
+
+        this.addInfosOnMap(StringConversion.lengthToString(distance), StringConversion.timeToString(time));
     }
 
 
@@ -70,6 +128,34 @@ public class MapActivity extends AppCompatActivity{
     private void setupCompass() {
         compass = new Compass(map);
         compass.startListeningToSensors();
+    }
+
+    /**
+     * Ask the locator for the new position of the user
+     */
+    private void updateUserLocation(){
+        Locator loc = new Locator(this);
+        loc.getLocation(Locator.Method.GPS, this);
+    }
+
+    /**
+     * Update the user Location with the new position and update the map informations.
+     *
+     * @param location
+     */
+    @Override
+    public void onLocationFound(Location location) {
+        userLocation = new GeoPoint(location.getLatitude(), location.getLongitude());
+
+        updateMapCursors();
+    }
+
+    /**
+     * the lcoation gps can't be found, a message is show
+     */
+    @Override
+    public void onLocationNotFound() {
+        Toast.makeText(this, R.string.user_location_not_found, Toast.LENGTH_SHORT);
     }
 
     @Override
