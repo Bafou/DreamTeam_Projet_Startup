@@ -16,5 +16,5 @@
     <string name="time_car_label">Durée restante</string>
     <string name="distance_route_label">Distance</string>
     <string name="time_route_label">Temps trajet</string>
-    <string name="user_location_not_found">Connexion GPS perdue. L'application va tenter de se reconnecter.</string>
+    <string name="user_location_not_found">Connexion GPS perdue. L\'application va tenter de se reconnecter.</string>
 </resources>
