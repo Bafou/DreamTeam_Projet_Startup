@@ -1,32 +1,12 @@
 package utils;
 
+
 /**
  * Created by remi on 02/11/2016.
  */
 
 public class StringConversion {
 
-    /**
-     * Convert the time in string
-     * @param time time in hours
-     * @return the string represent the time
-     */
-    public static String timeToString(double time){
-        int hours = (int) time;
-        double dMin= (time-hours)*60;
-        int min = (int) dMin;
-        double seconds = (dMin-min);
-        if(seconds>0.0){
-            min=min+1;
-        }
-
-        String sHours =  hours+" h ";
-        String sMin=  min+" min";
-        if(hours==0){
-            sHours="";
-        }
-        return sHours+sMin;
-    }
 
     /**
      * Convert the length to string

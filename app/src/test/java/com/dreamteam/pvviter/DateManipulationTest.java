@@ -31,6 +31,19 @@ public class DateManipulationTest {
     }
 
     @Test
+    public void hourToStringTest() {
+        double hours = 0.5; //30 min in hour
+        assertTrue(DateManipulation.hourToString(hours).equals("0:30"));
+        hours = 1.2;
+        assertTrue(DateManipulation.hourToString(hours).equals("1:12"));
+        hours = 0.83; //49.8 min have to return  50 min
+        assertTrue(DateManipulation.hourToString(hours).equals("0:50"));
+        hours = 0.79; //47.4 min function have to return 48 min
+        assertTrue(DateManipulation.hourToString(hours).equals("0:48"));
+    }
+
+
+    @Test
     public void diffBetweenTwoDate() throws Exception{
         Calendar oldCal = Calendar.getInstance();
         oldCal.set(Calendar.DAY_OF_MONTH, 2);

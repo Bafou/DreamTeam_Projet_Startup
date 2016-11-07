@@ -15,7 +15,10 @@ import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 
+import java.util.Date;
+
 import services.Compass;
+import utils.DateManipulation;
 import utils.StringConversion;
 import utils.MapFunctions;
 import utils.MathCalcul;
@@ -83,7 +86,7 @@ public class MapActivity extends AppCompatActivity{
         Double time = MathCalcul.getTime(distance, Settings.SPEED);
         MapFunctions.drawRoute(map, road );
 
-        this.addInfosOnMap(StringConversion.lengthToString(distance), StringConversion.timeToString(time));
+        this.addInfosOnMap(StringConversion.lengthToString(distance), DateManipulation.hourToString(time));
 
         this.map = map;
 
