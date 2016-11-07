@@ -14,9 +14,12 @@ deploy:
   skip_cleanup: true
   on :
     all_branches: true
-
+    
 after_success:
-- sh set_tags.sh
+  - git config credential.helper "store --file=.git/credentials"
+  - echo "https://${GH_TOKEN}:@github.com" > .git/credentials
+  - node ./node_modules/grunt-cli/bin/grunt release
+  - sh set_tags.sh
 
 env:
   global:
