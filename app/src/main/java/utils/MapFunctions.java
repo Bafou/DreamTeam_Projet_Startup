@@ -111,7 +111,7 @@ public class MapFunctions {
      * @return The drawn route
      */
     public static Polyline drawRoute(MapView map, ArrayList<GeoPoint> wayPoints) {
-        //RoadManager roadManager = new MapQuestRoadManager("VdihCkmLUABBjWu0LgVvCK7Bwi6tSmUS"); //Free key from Map Quest, 15000 free requests per month
+        //RoadManager roadManager = new MapQuestRoadManager("VdihCkmLUABBjWu0LgVvCK7Bwi6tSmUS"); //Free key from Route Quest, 15000 free requests per month
         //roadManager.addRequestOption("routeType=pedestrian"); //Doesn't work
 
         RoadManager roadManager = new OSRMRoadManager(map.getContext());
@@ -132,6 +132,44 @@ public class MapFunctions {
         refreshMap(map);
 
         return roadOverlay;
+    }
+
+    /**
+     * Draw a route with a Road object
+     * @param map map where draw the route
+     * @param road the route
+     * @return the drawn route
+     */
+    public static Polyline drawRoute(MapView map, Road road){
+        Polyline roadOverlay = RoadManager.buildRoadOverlay(road, Color.CYAN, 10);
+        map.getOverlays().add(0, roadOverlay);
+        refreshMap(map);
+        return roadOverlay;
+    }
+
+    /**
+     * Get a road with the start and the end point
+     * @param map the map of the road
+     * @param startPoint
+     * @param endPoint
+     * @return the road
+     */
+    public static Road getRoad(MapView map, GeoPoint startPoint, GeoPoint endPoint){
+        ArrayList<GeoPoint> wayPoints = new ArrayList<>();
+        wayPoints.add(startPoint);
+        wayPoints.add(endPoint);
+
+        RoadManager roadManager = new OSRMRoadManager(map.getContext());
+
+        RouteData routeData = new RouteData(map, wayPoints, roadManager);
+        Road road = null;
+
+        try {
+            road = new AsynchronousRouting().execute(routeData).get();
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+        return road;
     }
 
     /**

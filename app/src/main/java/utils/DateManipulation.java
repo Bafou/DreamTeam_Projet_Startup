@@ -44,6 +44,26 @@ public class DateManipulation {
     }
 
     /**
+     * Convert a hour to a string
+     * @param hour in double type
+     * @return the string represent hours
+     */
+    public static String hourToString(double hour){
+        int iHour = (int) hour;
+        double dMin= (hour-iHour)*60;
+        int iMin = (int) dMin;
+        double second = (dMin-iMin);
+        if(second>0.0){
+            iMin=iMin+1;
+        }
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY, iHour);
+        calendar.set(Calendar.MINUTE, iMin);
+        return dateHourMinuteToString(calendar.getTime());
+    }
+
+    /**
      * Method to get the difference between to calendar.
      * The difference order is the first Cal - the second Cal
      * @param cal1 usually the older calendar
