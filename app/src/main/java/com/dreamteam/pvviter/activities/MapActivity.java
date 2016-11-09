@@ -18,10 +18,13 @@ import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 
+import java.util.Calendar;
 import java.util.Date;
+import java.util.Hashtable;
 
 import services.Compass;
 import services.Locator;
+import utils.Data_Storage;
 import utils.DateManipulation;
 import utils.StringConversion;
 import utils.MapFunctions;
@@ -65,7 +68,10 @@ public class MapActivity extends AppCompatActivity implements Locator.Listener{
      * @param distance the distance of the route
      * @param time the time for travel the route
      */
-    private void addInfosOnMap(String distance, String time){
+    private void addInfosOnMap(String timeLeft, String distance, String time){
+        TextView time_car = (TextView) findViewById(R.id.time_car);
+        time_car.setText(timeLeft);
+
         TextView distance_route = (TextView) findViewById(R.id.distance_route);
         distance_route.setText(distance);
 
@@ -92,9 +98,10 @@ public class MapActivity extends AppCompatActivity implements Locator.Listener{
         IMapController mapController = map.getController();
         mapController.setZoom(17);
 
-        //Default location
-        userLocation = new GeoPoint(50.633333, 3.066667); //Lille, France
-        carLocation = new GeoPoint(50.636333, 3.069647); //Still Lille, France
+        //Starting position
+        carLocation = Data_Storage.get_car_location(getApplicationContext());
+        userLocation = Data_Storage.get_user_location(getApplicationContext());
+
 
         mapController.setCenter(userLocation);
 
@@ -112,12 +119,18 @@ public class MapActivity extends AppCompatActivity implements Locator.Listener{
         MapFunctions.addCarPoint(map, carLocation);
 
         //MapFunctions.drawRoute(map, startPoint, endPoint);
-        Road road = MapFunctions.getRoad(map, userLocation, carLocation );
+        Road road = MapFunctions.getRoad(map, userLocation, carLocation);
         Double distance = road.mLength;
         Double time = MathCalcul.getTime(distance, Settings.SPEED);
         MapFunctions.drawRoute(map, road);
 
-        this.addInfosOnMap(StringConversion.lengthToString(distance), DateManipulation.hourToString(time));
+        long ms = Data_Storage.get_parking_end_time_in_milliseconds(getApplicationContext());
+        Calendar calendarEnd = Calendar.getInstance();
+        calendarEnd.setTimeInMillis(ms);
+        Hashtable<Integer, Integer> dateDiff =  DateManipulation.diffBetweenTwoDate(calendarEnd, Calendar.getInstance());
+        String timeLeft = String.format("%02d", dateDiff.get(DateManipulation.ELAPSED_HOURS))+"h"+String.format("%02d", dateDiff.get(DateManipulation.ELAPSED_MINUTES));
+
+        this.addInfosOnMap(timeLeft, StringConversion.lengthToString(distance), DateManipulation.hourToString(time));
     }
 
     /**
@@ -136,6 +149,7 @@ public class MapActivity extends AppCompatActivity implements Locator.Listener{
     @Override
     public void onLocationFound(Location location) {
         userLocation = new GeoPoint(location.getLatitude(), location.getLongitude());
+        Data_Storage.set_user_location(getApplicationContext(), userLocation);
 
         updateMapCursors();
     }

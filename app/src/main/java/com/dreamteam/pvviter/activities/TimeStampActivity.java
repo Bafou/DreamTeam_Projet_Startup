@@ -15,6 +15,7 @@ import com.shawnlin.numberpicker.NumberPicker;
 import com.dreamteam.pvviter.R;
 import java.util.Calendar;
 import fragments.TimePickerFragment;
+import utils.Data_Storage;
 import utils.DateManipulation;
 
 
@@ -145,6 +146,14 @@ public class TimeStampActivity extends AppCompatActivity implements NumberPicker
      * @param view
      */
     public void openMapActivity(View view){
+        Calendar newCal = Calendar.getInstance();
+
+        int hoursToAdd = numberPickerHours.getValue();
+        int minutesToAdd = numberPickerMinutes.getValue()*minuteStepSize;
+        newCal.add(Calendar.HOUR_OF_DAY, hoursToAdd);
+        newCal.add(Calendar.MINUTE, minutesToAdd);
+        Data_Storage.set_parking_end_time_in_milliseconds(getApplicationContext(), newCal.getTimeInMillis());
+
         Intent intent = new Intent(this, MapActivity.class);
         startActivity(intent);
     }

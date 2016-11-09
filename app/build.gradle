@@ -40,4 +40,5 @@ dependencies {
     compile 'com.shawnlin:number-picker:2.1.0'
     compile 'com.github.MKergall:osmbonuspack:6.0'
 
+    androidTestCompile 'junit:junit:4.12'
 }

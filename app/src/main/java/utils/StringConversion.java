@@ -1,6 +1,8 @@
 package utils;
 
 
+import org.osmdroid.util.GeoPoint;
+
 /**
  * Created by remi on 02/11/2016.
  */
@@ -24,6 +26,26 @@ public class StringConversion {
             sKm="";
         }
         return sKm+sM;
+    }
+
+    /**
+     * Convert a geoPoint into a String.
+     * @param geoPoint
+     * @return if string with the format "latitude;longitude"
+     */
+    public static String geoPointToString(GeoPoint geoPoint){
+        return geoPoint.getLatitude() + ";" + geoPoint.getLongitude();
+    }
+
+    /**
+     * Convert a String into a geoPoint
+     * @param data A string of the format "latidude;longitude"
+     * @return
+     */
+    public static GeoPoint stringToGeoPoint(String data){
+        double latitude = Double.parseDouble(data.split(";")[0]);
+        double longitude = Double.parseDouble(data.split(";")[1]);
+        return new GeoPoint(latitude,longitude);
     }
 
 }

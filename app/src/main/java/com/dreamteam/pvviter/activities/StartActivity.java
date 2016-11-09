@@ -13,20 +13,26 @@ import android.widget.Toast;
 
 import com.dreamteam.pvviter.R;
 
+import org.osmdroid.util.GeoPoint;
+
+import services.File_IO;
 import services.Locator;
+import utils.Data_Storage;
 
 import static services.Locator.Method.GPS;
 
 public class StartActivity extends Activity implements Locator.Listener {
-
-    private Double latitude = null;
-    private Double longitude = null;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         overridePendingTransition(R.anim.fadein, R.anim.fadeout);
         setContentView(R.layout.activity_start);
+
+        if(File_IO.does_file_exist(getApplicationContext(), File_IO.PARKING_END_TIME)){
+            Intent intent = new Intent(this, MapActivity.class);
+            startActivity(intent);
+        }
+
     }
 
     /**
@@ -48,12 +54,7 @@ public class StartActivity extends Activity implements Locator.Listener {
         }
 
 
-        if (this.latitude != null && this.longitude != null) {
-            //TODO: send latitude and longitude to the right activity (map?)
-            Log.d("saveLocation", this.latitude+";"+this.longitude);
-            Intent intent = new Intent(this, TimeStampActivity.class);
-            startActivity(intent);
-        }
+
     }
 
     /**
@@ -63,8 +64,11 @@ public class StartActivity extends Activity implements Locator.Listener {
      */
     @Override
     public void onLocationFound(Location location) {
-        this.latitude = location.getLatitude();
-        this.longitude = location.getLongitude();
+        Data_Storage.set_car_location(getApplicationContext(), new GeoPoint(location.getLatitude(), location.getLongitude()));
+        Data_Storage.set_user_location(getApplicationContext(), new GeoPoint(location.getLatitude(), location.getLongitude()));
+
+        Intent intent = new Intent(this, TimeStampActivity.class);
+        startActivity(intent);
     }
 
     /**
