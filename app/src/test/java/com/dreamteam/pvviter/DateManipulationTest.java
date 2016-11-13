@@ -31,15 +31,16 @@ public class DateManipulationTest {
     }
 
     @Test
-    public void hourToStringTest() {
+    public void hourToCalendar() {
         double hours = 0.5; //30 min in hour
-        assertTrue(DateManipulation.hourToString(hours).equals("0:30"));
+        assertTrue(DateManipulation.hourToCalendar(hours).get(Calendar.MINUTE) == 30);
         hours = 1.2;
-        assertTrue(DateManipulation.hourToString(hours).equals("1:12"));
+        assertTrue(DateManipulation.hourToCalendar(hours).get(Calendar.HOUR_OF_DAY) == 1 &&
+                DateManipulation.hourToCalendar(hours).get(Calendar.MINUTE) == 12);
         hours = 0.83; //49.8 min have to return  50 min
-        assertTrue(DateManipulation.hourToString(hours).equals("0:50"));
+        assertTrue(DateManipulation.hourToCalendar(hours).get(Calendar.MINUTE) == 50);
         hours = 0.79; //47.4 min function have to return 48 min
-        assertTrue(DateManipulation.hourToString(hours).equals("0:48"));
+        assertTrue(DateManipulation.hourToCalendar(hours).get(Calendar.MINUTE) == 48);
     }
 
 

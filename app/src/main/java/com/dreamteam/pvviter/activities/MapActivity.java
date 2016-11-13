@@ -1,11 +1,18 @@
 package com.dreamteam.pvviter.activities;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
 import android.location.Location;
 import android.os.Handler;
+import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,6 +31,7 @@ import java.util.Hashtable;
 
 import services.Compass;
 import services.Locator;
+import services.PointOfNoReturnNotification;
 import utils.Data_Storage;
 import utils.DateManipulation;
 import utils.StringConversion;
@@ -47,7 +55,9 @@ public class MapActivity extends AppCompatActivity implements Locator.Listener{
         initMap();
         setupCompass();
         setupUserPositionHandler();
+
     }
+
 
     private void setupUserPositionHandler(){
         //Create an handler to update the user location regularly.
@@ -139,6 +149,43 @@ public class MapActivity extends AppCompatActivity implements Locator.Listener{
     private void updateUserLocation(){
         Locator loc = new Locator(this);
         loc.getLocation(Locator.Method.GPS, this);
+        checkPointOfNoReturn();
+    }
+
+    /**
+     * Temporary method to check if the point of no return was reached
+     * if yes, raise a notification
+     */
+    private void checkPointOfNoReturn(){
+        Road road = MapFunctions.getRoad(map, userLocation, carLocation);
+        Double distance = road.mLength;
+        Double time = MathCalcul.getTime(distance, Settings.SPEED);
+        Calendar calendarDistanceTime = DateManipulation.hourToCalendar(time);
+
+
+        long ms = Data_Storage.get_parking_end_time_in_milliseconds(getApplicationContext());
+        Calendar calendarEnd = Calendar.getInstance();
+        calendarEnd.setTimeInMillis(ms);
+        //we set the millisecond and second to 0 for the next comparing of date
+        calendarEnd.set(Calendar.MILLISECOND, 0);
+        calendarEnd.set(Calendar.SECOND, 0);
+
+
+        int distanceTimeMin = calendarDistanceTime.get(Calendar.MINUTE);
+        int distanceTimeHour = calendarDistanceTime.get(Calendar.HOUR_OF_DAY);
+
+        Calendar calArrivingTime = Calendar.getInstance();
+        //we set the millisecond and second to 0 for the next comparing of date
+        calArrivingTime.set(Calendar.MILLISECOND, 0);
+        calArrivingTime.set(Calendar.SECOND, 0);
+        calArrivingTime.add(Calendar.HOUR_OF_DAY, distanceTimeHour);
+        calArrivingTime.add(Calendar.MINUTE, distanceTimeMin);
+
+        //if it's <= 0 it mean than calArrivingTime is higher or equals to the calendarEnd
+        if(calendarEnd.getTime().compareTo(calArrivingTime.getTime()) == 0){
+            new PointOfNoReturnNotification(getApplicationContext());
+        }
+
     }
 
     /**
