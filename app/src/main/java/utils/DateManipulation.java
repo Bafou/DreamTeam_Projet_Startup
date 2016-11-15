@@ -49,6 +49,11 @@ public class DateManipulation {
      * @return the string represent hours
      */
     public static String hourToString(double hour){
+        Calendar calendar = hourToCalendar(hour);
+        return dateHourMinuteToString(calendar.getTime());
+    }
+
+    public static Calendar hourToCalendar(double hour){
         int iHour = (int) hour;
         double dMin= (hour-iHour)*60;
         int iMin = (int) dMin;
@@ -60,7 +65,7 @@ public class DateManipulation {
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.HOUR_OF_DAY, iHour);
         calendar.set(Calendar.MINUTE, iMin);
-        return dateHourMinuteToString(calendar.getTime());
+        return calendar;
     }
 
     /**

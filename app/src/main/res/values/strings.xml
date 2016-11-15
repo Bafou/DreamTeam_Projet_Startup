@@ -17,4 +17,5 @@
     <string name="distance_route_label">Distance</string>
     <string name="time_route_label">Temps trajet</string>
     <string name="user_location_not_found">Connexion GPS perdue. L\'application va tenter de se reconnecter.</string>
+    <string name="point_of_no_return_message_notification">Point de non retour atteint !</string>
 </resources>
