@@ -16,6 +16,7 @@ deploy:
   skip_cleanup: true
   on :
     all_branches: true
+    tags: true
     
 notifications:
   slack: pvviter:FfofyWM6YJq0LkHC39aespW4
