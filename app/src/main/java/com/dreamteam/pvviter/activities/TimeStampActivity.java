@@ -1,19 +1,24 @@
 package com.dreamteam.pvviter.activities;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.shawnlin.numberpicker.NumberPicker;
 import com.dreamteam.pvviter.R;
 import java.util.Calendar;
+import java.util.Hashtable;
+
 import fragments.TimePickerFragment;
 import utils.Data_Storage;
 import utils.DateManipulation;
@@ -31,12 +36,28 @@ public class TimeStampActivity extends AppCompatActivity implements NumberPicker
     private static int defaultMinuteStepSize = 5;
     private static int minuteStepSize = defaultMinuteStepSize;
     private TimePickerFragment timePickerFragment = new TimePickerFragment();
+    private boolean changeTimeMode=false;
+    private long parkingTimeStore;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         overridePendingTransition(R.anim.fadein, R.anim.fadeout);
         setContentView(R.layout.activity_time_stamp);
+
+        //if the activity is call by "change_time" (map button)
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null){
+            changeTimeMode = bundle.getBoolean("changeTimeMode");
+        }
+        if(changeTimeMode){
+            parkingTimeStore=getDataStorageParkingTime();
+            ImageButton carPictureButton = (ImageButton) findViewById(R.id.car_picture_button);
+            carPictureButton.setVisibility(View.INVISIBLE);
+
+            TextView timeStampLabel = (TextView) findViewById(R.id.time_stamp_title);
+            timeStampLabel.setText(R.string.add_car_time_label);
+        }
 
         customHoursNumberPicker();
         customMinutesNumberPicker();
@@ -57,6 +78,8 @@ public class TimeStampActivity extends AppCompatActivity implements NumberPicker
     public static int getMinuteStepSize() {
         return minuteStepSize;
     }
+
+    public boolean isChangeTimeMode(){ return changeTimeMode;}
 
     /**
      * Customise the number picker for the hours
@@ -120,12 +143,18 @@ public class TimeStampActivity extends AppCompatActivity implements NumberPicker
     public void updateTimeStampEndValue(){
         TextView timeStampEnd = (TextView) findViewById(R.id.time_stamp_end);
         String timeStampEndString = getResources().getString(R.string.time_stamp_end);
+        //Log.d("minuteStepSize",""+minuteStepSize );
+        
         Calendar newCal = Calendar.getInstance();
-
+        //if the user want change parking time
+        if(changeTimeMode){
+            newCal.setTimeInMillis( parkingTimeStore);
+        }
         int hoursToAdd = numberPickerHours.getValue();
         int minutesToAdd = numberPickerMinutes.getValue()*minuteStepSize;
         newCal.add(Calendar.HOUR_OF_DAY, hoursToAdd);
         newCal.add(Calendar.MINUTE, minutesToAdd);
+
 
         //test if it's tomorrow
         if(DateManipulation.isTomorrow(newCal)){
@@ -148,14 +177,27 @@ public class TimeStampActivity extends AppCompatActivity implements NumberPicker
     public void openMapActivity(View view){
         Calendar newCal = Calendar.getInstance();
 
+        //if the user want add car park time
+        if(changeTimeMode){
+            newCal.setTimeInMillis( parkingTimeStore );
+        }
+
         int hoursToAdd = numberPickerHours.getValue();
         int minutesToAdd = numberPickerMinutes.getValue()*minuteStepSize;
         newCal.add(Calendar.HOUR_OF_DAY, hoursToAdd);
         newCal.add(Calendar.MINUTE, minutesToAdd);
         Data_Storage.set_parking_end_time_in_milliseconds(getApplicationContext(), newCal.getTimeInMillis());
 
-        Intent intent = new Intent(this, MapActivity.class);
-        startActivity(intent);
+        if(isChangeTimeMode()){
+            //return intent for call onActivityResult mathode on MapActivity
+            Intent returnIntent = new Intent();
+            setResult(Activity.RESULT_CANCELED, returnIntent);
+            finish();
+        }else {
+            Intent intent = new Intent(this, MapActivity.class);
+            startActivity(intent);
+        }
+
     }
 
     public void openTimePickerDialog(View view){
@@ -174,9 +216,20 @@ public class TimeStampActivity extends AppCompatActivity implements NumberPicker
         //TODO: implement here the photo activity
     }
 
+    public long getDataStorageParkingTime(){
+        return Data_Storage.get_parking_end_time_in_milliseconds(getApplicationContext());
+    }
+    public long getParkingTimeStore(){
+        return parkingTimeStore;
+    }
+
     @Override
     public void onBackPressed() {
-        moveTaskToBack(true);
+        if(isChangeTimeMode()){
+            finish();
+        }else {
+            moveTaskToBack(true);
+        }
     }
 
 }

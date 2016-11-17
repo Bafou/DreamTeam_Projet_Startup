@@ -5,6 +5,7 @@ import android.app.DialogFragment;
 import android.app.TimePickerDialog;
 import android.os.Bundle;
 import android.text.format.DateFormat;
+import android.util.Log;
 import android.widget.TimePicker;
 
 import com.dreamteam.pvviter.activities.TimeStampActivity;
@@ -31,8 +32,12 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         // Use the current time as the default values for the picker
         Calendar c = Calendar.getInstance();
-        c.add(Calendar.HOUR_OF_DAY, timeStampActivity.getNumberPickerHours().getValue());
-        c.add(Calendar.MINUTE, timeStampActivity.getNumberPickerMinutes().getValue() * TimeStampActivity.getMinuteStepSize());
+        if(timeStampActivity.isChangeTimeMode()){
+            c.setTimeInMillis(timeStampActivity.getParkingTimeStore());
+        }else {
+            c.add(Calendar.HOUR_OF_DAY, timeStampActivity.getNumberPickerHours().getValue());
+            c.add(Calendar.MINUTE, timeStampActivity.getNumberPickerMinutes().getValue() * TimeStampActivity.getMinuteStepSize());
+        }
         int hour = c.get(Calendar.HOUR_OF_DAY);
         int minute = c.get(Calendar.MINUTE);
 
@@ -45,10 +50,17 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
         //set a call with the new parameters for hours and minutes
         Calendar cal = Calendar.getInstance();
+        if(timeStampActivity.isChangeTimeMode()){
+            cal.setTimeInMillis(timeStampActivity.getParkingTimeStore());
+        }
         cal.set(Calendar.HOUR_OF_DAY, hourOfDay);
         cal.set(Calendar.MINUTE, minute);
         //create a new calendar at the current time
         Calendar calNow = Calendar.getInstance();
+        if(timeStampActivity.isChangeTimeMode()){
+            calNow.setTimeInMillis(timeStampActivity.getParkingTimeStore());
+        }
+
 
         //calculus the difference and set the result into a hashtable
         Hashtable<Integer, Integer> res = DateManipulation.diffBetweenTwoDate(cal, calNow);
@@ -61,11 +73,12 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
         }
 
         if(elapsedMinutes < 0 && elapsedHours <= 0){
-                elapsedHours -= 1;
+            elapsedHours -= 1;
         }
 
+        //Log.d("elapsed",elapsedHours+":"+elapsedMinutes );
         this.timeStampActivity.getNumberPickerHours().setValue(elapsedHours);
-        this.timeStampActivity.getNumberPickerMinutes().setValue(elapsedMinutes);
+        this.timeStampActivity.getNumberPickerMinutes().setValue(elapsedMinutes/TimeStampActivity.getMinuteStepSize());
         this.timeStampActivity.updateTimeStampEndValue();
     }
 
