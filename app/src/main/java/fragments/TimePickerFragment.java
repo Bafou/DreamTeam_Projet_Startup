@@ -34,10 +34,11 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
         Calendar c = Calendar.getInstance();
         if(timeStampActivity.isChangeTimeMode()){
             c.setTimeInMillis(timeStampActivity.getParkingTimeStore());
-        }else {
-            c.add(Calendar.HOUR_OF_DAY, timeStampActivity.getNumberPickerHours().getValue());
-            c.add(Calendar.MINUTE, timeStampActivity.getNumberPickerMinutes().getValue() * TimeStampActivity.getMinuteStepSize());
         }
+        
+        c.add(Calendar.HOUR_OF_DAY, timeStampActivity.getNumberPickerHours().getValue());
+        c.add(Calendar.MINUTE, timeStampActivity.getNumberPickerMinutes().getValue() * TimeStampActivity.getMinuteStepSize());
+
         int hour = c.get(Calendar.HOUR_OF_DAY);
         int minute = c.get(Calendar.MINUTE);
 
