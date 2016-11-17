@@ -22,6 +22,8 @@ import java.util.ArrayList;
  */
 public class MapFunctions {
 
+    public final static int ROUTE_COLOR = Color.CYAN;
+
     /**
      * Overload method. See addCarPoint(MapView map, GeoPoint point).
      *
@@ -125,7 +127,7 @@ public class MapFunctions {
             e.printStackTrace();
         }
 
-        Polyline roadOverlay = RoadManager.buildRoadOverlay(road, Color.CYAN, 10);
+        Polyline roadOverlay = RoadManager.buildRoadOverlay(road, ROUTE_COLOR, 10);
 
         map.getOverlays().add(0, roadOverlay);
 
@@ -141,7 +143,7 @@ public class MapFunctions {
      * @return the drawn route
      */
     public static Polyline drawRoute(MapView map, Road road){
-        Polyline roadOverlay = RoadManager.buildRoadOverlay(road, Color.CYAN, 10);
+        Polyline roadOverlay = RoadManager.buildRoadOverlay(road, ROUTE_COLOR, 10);
         map.getOverlays().add(0, roadOverlay);
         refreshMap(map);
         return roadOverlay;

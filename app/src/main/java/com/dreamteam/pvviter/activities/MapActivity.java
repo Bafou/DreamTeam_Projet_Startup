@@ -23,14 +23,21 @@ import com.dreamteam.pvviter.R;
 
 import org.osmdroid.api.IMapController;
 import org.osmdroid.bonuspack.routing.Road;
+import org.osmdroid.events.MapListener;
+import org.osmdroid.events.ScrollEvent;
+import org.osmdroid.events.ZoomEvent;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
+import org.osmdroid.util.BoundingBox;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
+import org.osmdroid.views.overlay.Polyline;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Hashtable;
+import java.util.Iterator;
 
 import services.Compass;
 import services.File_IO;
@@ -50,6 +57,10 @@ public class MapActivity extends AppCompatActivity implements Locator.Listener{
     private GeoPoint userLocation ;
     private GeoPoint carLocation ;
 
+    //Needed to update the polyline
+    private Thread updateThread = null;
+    private Polyline pathOverlay = null;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,6 +70,21 @@ public class MapActivity extends AppCompatActivity implements Locator.Listener{
         initMap();
         setupCompass();
         setupUserPositionHandler();
+
+        /* Path disappearing when zoomed in correction */
+        map.setMapListener(new MapListener() {
+            @Override
+            public boolean onScroll(ScrollEvent event) {
+                drawOptimizedRoute(MapActivity.this);
+                return false;
+            }
+
+            @Override
+            public boolean onZoom(ZoomEvent event) {
+                drawOptimizedRoute(MapActivity.this);
+                return false;
+            }
+        });
 
     }
 
@@ -278,5 +304,64 @@ public class MapActivity extends AppCompatActivity implements Locator.Listener{
     @Override
     public void onBackPressed() {
         moveTaskToBack(true);
+    }
+
+    /**
+     * Calculate and draw a new route to upgrade performance and solve rendering problems
+     *
+     * @param context
+     */
+    public void drawOptimizedRoute(final Context context){
+        if(updateThread == null || !updateThread.isAlive()){
+            updateRoute(context);
+        }
+    }
+
+    /**
+     * Update the road on map with the new calculated polyline
+     *
+     * @param context
+     */
+    private void updateRoute(final Context context){
+        updateThread = new Thread(new Runnable() {
+            public void run() {
+                final ArrayList<GeoPoint> zoomedPoints = new ArrayList<>(((Polyline)map.getOverlays().get(0)).getPoints());
+
+                //Remove points that are offscreen
+                removeHiddenPoints(zoomedPoints);
+
+                //Update the map on thread
+                map.post(new Runnable() {
+                    public void run() {
+                        map.getOverlays().remove(pathOverlay);
+                        pathOverlay = new Polyline(context);
+                        pathOverlay.setPoints(zoomedPoints);
+                        pathOverlay.setColor(MapFunctions.ROUTE_COLOR);
+                        map.getOverlays().add(pathOverlay);
+                        map.invalidate();
+                    }
+                });
+            }
+        });
+        updateThread.start();
+    }
+
+    /**
+     * This functions removes any point that is outside the visual bounds of the map view
+     *
+     * @param zoomedPoints The list of geopoints to process
+     */
+    private void removeHiddenPoints(ArrayList<GeoPoint> zoomedPoints){
+        BoundingBox bounds = map.getBoundingBox();
+
+        for (Iterator<GeoPoint> iterator = zoomedPoints.iterator(); iterator.hasNext();) {
+            GeoPoint point = iterator.next();
+
+            boolean inLongitude = point.getLatitude() < (bounds.getLatNorth() + 0.005) && (point.getLatitude() + 0.005) > bounds.getLatSouth();
+            boolean inLatitude = (point.getLongitude() + 0.005) > bounds.getLonWest() && point.getLongitude() < (bounds.getLonEast()+ 0.005);
+            if(!inLongitude || !inLatitude){
+                iterator.remove();
+            }
+        }
     }
 }
