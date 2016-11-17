@@ -1,9 +1,11 @@
 package com.dreamteam.pvviter.activities;
 
+import android.app.AlertDialog;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Handler;
@@ -25,11 +27,13 @@ import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 
+import java.io.File;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Hashtable;
 
 import services.Compass;
+import services.File_IO;
 import services.Locator;
 import services.PointOfNoReturnNotification;
 import utils.Data_Storage;
@@ -58,17 +62,18 @@ public class MapActivity extends AppCompatActivity implements Locator.Listener{
 
     }
 
+    private final Handler handler = new Handler();
+    private final Runnable runnable = new Runnable() {
+        @Override
+        public void run() {
+            updateUserLocation();
+            handler.postDelayed(this, 10000);
+        }
+    };
 
     private void setupUserPositionHandler(){
         //Create an handler to update the user location regularly.
-        final Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                updateUserLocation();
-                handler.postDelayed(this, 10000);
-            }
-        }, 10000);
+        handler.postDelayed(runnable, 10000);
     }
 
 
@@ -234,6 +239,36 @@ public class MapActivity extends AppCompatActivity implements Locator.Listener{
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            return true;
+        }
+        if (id == R.id.action_reset) {
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+            alertDialogBuilder.setTitle(R.string.action_reset_title);
+            alertDialogBuilder.setMessage(R.string.action_reset_message);
+            alertDialogBuilder.setPositiveButton(R.string.action_reset_yes, new DialogInterface.OnClickListener() {
+
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    File_IO.delete_all_files(getApplicationContext());
+                    handler.removeCallbacks(runnable);
+
+                    Intent i = getBaseContext().getPackageManager()
+                            .getLaunchIntentForPackage(getBaseContext().getPackageName());
+                    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(i);
+                }
+            });
+
+            alertDialogBuilder.setNegativeButton(R.string.action_reset_no, new DialogInterface.OnClickListener() {
+
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            });
+
+
+            alertDialogBuilder.create().show();
             return true;
         }
 

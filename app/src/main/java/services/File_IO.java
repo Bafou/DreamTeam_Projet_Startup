@@ -71,4 +71,10 @@ public class File_IO {
         }
         return true;
     }
+
+    public static void delete_all_files(Context context){
+        context.deleteFile(USER_LOCATION_FILE);
+        context.deleteFile(CAR_LOCATION_FILE);
+        context.deleteFile(PARKING_END_TIME);
+    }
 }
