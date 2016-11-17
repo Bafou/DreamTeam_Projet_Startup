@@ -82,7 +82,7 @@ public class Compass implements SensorEventListener {
                 SensorManager.getOrientation(R, orientation);
                 azimuth = (float) Math.toDegrees(orientation[0]);
 
-                map.setMapOrientation(azimuth);
+                map.setMapOrientation(-azimuth);
             }
         }
     }
