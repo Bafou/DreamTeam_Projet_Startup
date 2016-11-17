@@ -1,20 +1,15 @@
 package com.dreamteam.pvviter.activities;
 
 import android.app.AlertDialog;
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Handler;
-import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,10 +27,8 @@ import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.Polyline;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.Hashtable;
 import java.util.Iterator;
 
@@ -50,12 +43,12 @@ import utils.MapFunctions;
 import utils.MathCalcul;
 import utils.Settings;
 
-public class MapActivity extends AppCompatActivity implements Locator.Listener{
+public class MapActivity extends AppCompatActivity implements Locator.Listener {
 
     private MapView map;
     private Compass compass;
-    private GeoPoint userLocation ;
-    private GeoPoint carLocation ;
+    private GeoPoint userLocation;
+    private GeoPoint carLocation;
 
     //Needed to update the polyline
     private Thread updateThread = null;
@@ -97,19 +90,19 @@ public class MapActivity extends AppCompatActivity implements Locator.Listener{
         }
     };
 
-    private void setupUserPositionHandler(){
+    private void setupUserPositionHandler() {
         //Create an handler to update the user location regularly.
         handler.postDelayed(runnable, 10000);
     }
 
 
-
     /**
-     * Add informations on the map view
+     * Add information on the map view
+     *
      * @param distance the distance of the route
-     * @param time the time for travel the route
+     * @param time     the time for travel the route
      */
-    private void addInfosOnMap(String timeLeft, String distance, String time){
+    private void addInfoOnMap(String timeLeft, String distance, String time) {
         TextView time_car = (TextView) findViewById(R.id.time_car);
         time_car.setText(timeLeft);
 
@@ -154,7 +147,7 @@ public class MapActivity extends AppCompatActivity implements Locator.Listener{
      * Clear the map and add the car, user location and then trace a route between then.
      * Route data are re-calculated too
      */
-    private void updateMapCursors(){
+    private void updateMapCursors() {
         MapFunctions.clearMap(map);
         MapFunctions.addCurrentPositionPoint(map, userLocation);
         MapFunctions.addCarPoint(map, carLocation);
@@ -168,16 +161,16 @@ public class MapActivity extends AppCompatActivity implements Locator.Listener{
         long ms = Data_Storage.get_parking_end_time_in_milliseconds(getApplicationContext());
         Calendar calendarEnd = Calendar.getInstance();
         calendarEnd.setTimeInMillis(ms);
-        Hashtable<Integer, Integer> dateDiff =  DateManipulation.diffBetweenTwoDate(calendarEnd, Calendar.getInstance());
-        String timeLeft = String.format("%02d", dateDiff.get(DateManipulation.ELAPSED_HOURS))+"h"+String.format("%02d", dateDiff.get(DateManipulation.ELAPSED_MINUTES));
+        Hashtable<Integer, Integer> dateDiff = DateManipulation.diffBetweenTwoDate(calendarEnd, Calendar.getInstance());
+        String timeLeft = String.format("%02d", dateDiff.get(DateManipulation.ELAPSED_HOURS)) + "h" + String.format("%02d", dateDiff.get(DateManipulation.ELAPSED_MINUTES));
 
-        this.addInfosOnMap(timeLeft, StringConversion.lengthToString(distance), DateManipulation.hourToString(time));
+        this.addInfoOnMap(timeLeft, StringConversion.lengthToString(distance), DateManipulation.hourToString(time));
     }
 
     /**
      * Ask the locator for the new position of the user
      */
-    private void updateUserLocation(){
+    private void updateUserLocation() {
         Locator loc = new Locator(this);
         loc.getLocation(Locator.Method.GPS, this);
         checkPointOfNoReturn();
@@ -187,7 +180,7 @@ public class MapActivity extends AppCompatActivity implements Locator.Listener{
      * Temporary method to check if the point of no return was reached
      * if yes, raise a notification
      */
-    private void checkPointOfNoReturn(){
+    private void checkPointOfNoReturn() {
         Road road = MapFunctions.getRoad(map, userLocation, carLocation);
         Double distance = road.mLength;
         Double time = MathCalcul.getTime(distance, Settings.SPEED);
@@ -213,16 +206,16 @@ public class MapActivity extends AppCompatActivity implements Locator.Listener{
         calArrivingTime.add(Calendar.MINUTE, distanceTimeMin);
 
         //if it's <= 0 it mean than calArrivingTime is higher or equals to the calendarEnd
-        if(calendarEnd.getTime().compareTo(calArrivingTime.getTime()) == 0){
+        if (calendarEnd.getTime().compareTo(calArrivingTime.getTime()) == 0) {
             new PointOfNoReturnNotification(getApplicationContext());
         }
 
     }
 
     /**
-     * Update the user Location with the new position and update the map informations.
+     * Update the user Location with the new position and update the map information.
      *
-     * @param location
+     * @param location The new location
      */
     @Override
     public void onLocationFound(Location location) {
@@ -233,11 +226,11 @@ public class MapActivity extends AppCompatActivity implements Locator.Listener{
     }
 
     /**
-     * the lcoation gps can't be found, a message is show
+     * the location gps can't be found, a message is show
      */
     @Override
     public void onLocationNotFound() {
-        Toast.makeText(this, R.string.user_location_not_found, Toast.LENGTH_SHORT);
+        Toast.makeText(this, R.string.user_location_not_found, Toast.LENGTH_SHORT).show();
     }
 
 
@@ -309,10 +302,10 @@ public class MapActivity extends AppCompatActivity implements Locator.Listener{
     /**
      * Calculate and draw a new route to upgrade performance and solve rendering problems
      *
-     * @param context
+     * @param context The activity context
      */
-    public void drawOptimizedRoute(final Context context){
-        if(updateThread == null || !updateThread.isAlive()){
+    public void drawOptimizedRoute(final Context context) {
+        if (updateThread == null || !updateThread.isAlive()) {
             updateRoute(context);
         }
     }
@@ -320,12 +313,12 @@ public class MapActivity extends AppCompatActivity implements Locator.Listener{
     /**
      * Update the road on map with the new calculated polyline
      *
-     * @param context
+     * @param context The activity context
      */
-    private void updateRoute(final Context context){
+    private void updateRoute(final Context context) {
         updateThread = new Thread(new Runnable() {
             public void run() {
-                final ArrayList<GeoPoint> zoomedPoints = new ArrayList<>(((Polyline)map.getOverlays().get(0)).getPoints());
+                final ArrayList<GeoPoint> zoomedPoints = new ArrayList<>(((Polyline) map.getOverlays().get(0)).getPoints());
 
                 //Remove points that are offscreen
                 removeHiddenPoints(zoomedPoints);
@@ -349,17 +342,17 @@ public class MapActivity extends AppCompatActivity implements Locator.Listener{
     /**
      * This functions removes any point that is outside the visual bounds of the map view
      *
-     * @param zoomedPoints The list of geopoints to process
+     * @param zoomedPoints The list of GeoPoints to process
      */
-    private void removeHiddenPoints(ArrayList<GeoPoint> zoomedPoints){
+    private void removeHiddenPoints(ArrayList<GeoPoint> zoomedPoints) {
         BoundingBox bounds = map.getBoundingBox();
 
-        for (Iterator<GeoPoint> iterator = zoomedPoints.iterator(); iterator.hasNext();) {
+        for (Iterator<GeoPoint> iterator = zoomedPoints.iterator(); iterator.hasNext(); ) {
             GeoPoint point = iterator.next();
 
             boolean inLongitude = point.getLatitude() < (bounds.getLatNorth() + 0.005) && (point.getLatitude() + 0.005) > bounds.getLatSouth();
-            boolean inLatitude = (point.getLongitude() + 0.005) > bounds.getLonWest() && point.getLongitude() < (bounds.getLonEast()+ 0.005);
-            if(!inLongitude || !inLatitude){
+            boolean inLatitude = (point.getLongitude() + 0.005) > bounds.getLonWest() && point.getLongitude() < (bounds.getLonEast() + 0.005);
+            if (!inLongitude || !inLatitude) {
                 iterator.remove();
             }
         }

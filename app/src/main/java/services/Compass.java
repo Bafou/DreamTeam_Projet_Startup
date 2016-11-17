@@ -22,7 +22,6 @@ public class Compass implements SensorEventListener {
     private float[] mGeomagnetic = new float[3];
 
     /**
-     *
      * @param map The map to update
      */
     public Compass(MapView map) {
