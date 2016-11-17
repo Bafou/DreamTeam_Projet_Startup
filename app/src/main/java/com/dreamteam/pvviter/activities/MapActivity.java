@@ -107,7 +107,8 @@ public class MapActivity extends AppCompatActivity implements Locator.Listener{
         MapView map = (MapView) findViewById(R.id.map);
         map.setTileSource(TileSourceFactory.MAPNIK);
         map.setMultiTouchControls(true);
-        map.setMaxZoomLevel(19);
+        map.setMaxZoomLevel(18);
+        map.setMinZoomLevel(6);
         map.setClickable(false);
 
         IMapController mapController = map.getController();
@@ -116,7 +117,6 @@ public class MapActivity extends AppCompatActivity implements Locator.Listener{
         //Starting position
         carLocation = Data_Storage.get_car_location(getApplicationContext());
         userLocation = Data_Storage.get_user_location(getApplicationContext());
-
 
         mapController.setCenter(userLocation);
 
