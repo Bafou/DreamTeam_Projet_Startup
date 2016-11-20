@@ -80,15 +80,15 @@ public class Locator implements LocationListener {
     }
 
     private void getLocationGPS(){
-        Location gpsLocation = this.locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        if (gpsLocation != null) {
-            Log.d(LOG_TAG, "Last known location found for GPS provider : " + gpsLocation.toString());
-            this.callback.onLocationFound(gpsLocation);
-        } else {
+        //Location gpsLocation = this.locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        //if (gpsLocation != null) {
+        //    Log.d(LOG_TAG, "Last known location found for GPS provider : " + gpsLocation.toString());
+        //    this.callback.onLocationFound(gpsLocation);
+       // } else {
 
             Log.d(LOG_TAG, "Request updates from GPS provider.");
             this.requestUpdates(LocationManager.GPS_PROVIDER);
-        }
+        //}
     }
 
     private void requestUpdates(String provider) {

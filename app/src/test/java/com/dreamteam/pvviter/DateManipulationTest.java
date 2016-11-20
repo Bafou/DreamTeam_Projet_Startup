@@ -31,6 +31,20 @@ public class DateManipulationTest {
     }
 
     @Test
+    public void hourToCalendar() {
+        double hours = 0.5; //30 min in hour
+        assertTrue(DateManipulation.hourToCalendar(hours).get(Calendar.MINUTE) == 30);
+        hours = 1.2;
+        assertTrue(DateManipulation.hourToCalendar(hours).get(Calendar.HOUR_OF_DAY) == 1 &&
+                DateManipulation.hourToCalendar(hours).get(Calendar.MINUTE) == 12);
+        hours = 0.83; //49.8 min have to return  50 min
+        assertTrue(DateManipulation.hourToCalendar(hours).get(Calendar.MINUTE) == 50);
+        hours = 0.79; //47.4 min function have to return 48 min
+        assertTrue(DateManipulation.hourToCalendar(hours).get(Calendar.MINUTE) == 48);
+    }
+
+
+    @Test
     public void diffBetweenTwoDate() throws Exception{
         Calendar oldCal = Calendar.getInstance();
         oldCal.set(Calendar.DAY_OF_MONTH, 2);

@@ -13,20 +13,26 @@ import android.widget.Toast;
 
 import com.dreamteam.pvviter.R;
 
+import org.osmdroid.util.GeoPoint;
+
+import services.File_IO;
 import services.Locator;
+import utils.Data_Storage;
 
 import static services.Locator.Method.GPS;
 
 public class StartActivity extends Activity implements Locator.Listener {
-
-    private Double latitude = null;
-    private Double longitude = null;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         overridePendingTransition(R.anim.fadein, R.anim.fadeout);
         setContentView(R.layout.activity_start);
+
+        if(File_IO.does_file_exist(getApplicationContext(), File_IO.PARKING_END_TIME)){
+            Intent intent = new Intent(this, MapActivity.class);
+            startActivity(intent);
+        }
+
     }
 
     /**
@@ -36,6 +42,8 @@ public class StartActivity extends Activity implements Locator.Listener {
      */
     public void saveLocation(View view) {
         Locator locator = new Locator(this.getApplicationContext());
+        findViewById(R.id.buttonSavePosition).setVisibility(View.INVISIBLE);
+        findViewById(R.id.loading).setVisibility(View.VISIBLE);
 
         if (locator.isEnableGPS()){
             //Log.d("saveLocation","gps active" );
@@ -48,12 +56,7 @@ public class StartActivity extends Activity implements Locator.Listener {
         }
 
 
-        if (this.latitude != null && this.longitude != null) {
-            //TODO: send latitude and longitude to the right activity (map?)
-            Log.d("saveLocation", this.latitude+";"+this.longitude);
-            Intent intent = new Intent(this, TimeStampActivity.class);
-            startActivity(intent);
-        }
+
     }
 
     /**
@@ -63,8 +66,11 @@ public class StartActivity extends Activity implements Locator.Listener {
      */
     @Override
     public void onLocationFound(Location location) {
-        this.latitude = location.getLatitude();
-        this.longitude = location.getLongitude();
+        Data_Storage.set_car_location(getApplicationContext(), new GeoPoint(location.getLatitude(), location.getLongitude()));
+        Data_Storage.set_user_location(getApplicationContext(), new GeoPoint(location.getLatitude(), location.getLongitude()));
+
+        Intent intent = new Intent(this, TimeStampActivity.class);
+        startActivity(intent);
     }
 
     /**
@@ -76,6 +82,9 @@ public class StartActivity extends Activity implements Locator.Listener {
         CharSequence text = getString(R.string.gps_not_functionnal);
         int duration = Toast.LENGTH_SHORT;
 
+        findViewById(R.id.buttonSavePosition).setVisibility(View.VISIBLE);
+        findViewById(R.id.loading).setVisibility(View.INVISIBLE);
+
         Toast toast = Toast.makeText(context, text, duration);
         toast.show();
     }
@@ -84,20 +93,23 @@ public class StartActivity extends Activity implements Locator.Listener {
      * show message for enable gps
      */
     private void GPSDisabledAlert(){
+        findViewById(R.id.buttonSavePosition).setVisibility(View.VISIBLE);
+        findViewById(R.id.loading).setVisibility(View.INVISIBLE);
+
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
         alertDialogBuilder.setMessage(R.string.gps_activation_authorization)
                 .setCancelable(false)
                 .setPositiveButton("OK",
-                        new DialogInterface.OnClickListener(){
-                            public void onClick(DialogInterface dialog, int id){
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
                                 Intent callGPSSettingIntent = new Intent(
                                         android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
                                 startActivity(callGPSSettingIntent);
                             }
                         });
         alertDialogBuilder.setNegativeButton("Quitter",
-                new DialogInterface.OnClickListener(){
-                    public void onClick(DialogInterface dialog, int id){
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
                         dialog.cancel();
                     }
                 });
