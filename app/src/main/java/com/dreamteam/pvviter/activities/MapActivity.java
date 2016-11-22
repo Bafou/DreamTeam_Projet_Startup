@@ -241,6 +241,10 @@ public class MapActivity extends AppCompatActivity implements Locator.Listener{
         if (id == R.id.action_settings) {
             return true;
         }
+        if (id == R.id.action_credit) {
+            Intent credit = new Intent(this, CreditActivity.class);
+            startActivity(credit);
+        }
         if (id == R.id.action_reset) {
             AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
             alertDialogBuilder.setTitle(R.string.action_reset_title);
