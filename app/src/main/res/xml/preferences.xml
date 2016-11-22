@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <SeekBarPreference
+        android:key="walk_speed"
+        android:title="@string/walk_speed"
+        android:summary="@string/walk_speed_summ"
+        android:defaultValue="true" />
+    <SeekBarPreference
+        android:key="nrp_delay"
+        android:title="@string/nrp_delay"
+        android:summary="@string/nrp_delay_summ"
+        android:defaultValue="true" />
+</PreferenceScreen>

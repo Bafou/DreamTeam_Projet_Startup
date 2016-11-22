@@ -12,8 +12,8 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="false"
-        tools:replace="android:supportsRtl"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        tools:replace="android:supportsRtl">
         <activity
             android:name=".activities.StartActivity"
             android:label="@string/app_name"
@@ -26,12 +26,12 @@
         </activity>
         <activity
             android:name=".activities.MapActivity"
-            android:label="@string/title_activity_map"/>
+            android:label="@string/title_activity_map" />
         <activity
             android:name=".activities.TimeStampActivity"
             android:label="@string/title_activity_time_stamp"
-            android:theme="@style/AppTheme.NoActionBar">
-        </activity>
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity android:name=".activities.SettingsActivity"></activity>
     </application>
 
 </manifest>
