@@ -1,5 +1,6 @@
 package com.dreamteam.pvviter.activities;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -260,6 +261,13 @@ public class MapActivity extends AppCompatActivity implements Locator.Listener {
         if (id == R.id.action_settings) {
             return true;
         }
+        //user want change car park time
+        if (id == R.id.action_change_time) {
+            Intent intent = new Intent(this, TimeStampActivity.class);
+            intent.putExtra("changeTimeMode", true);
+            //use startActivityForResult for call onActivityResult when TimeStampActivity finish
+            startActivityForResult(intent,1);
+        }
         if (id == R.id.action_reset) {
             AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
             alertDialogBuilder.setTitle(R.string.action_reset_title);
@@ -292,6 +300,18 @@ public class MapActivity extends AppCompatActivity implements Locator.Listener {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == 1) {
+            if (resultCode == Activity.RESULT_CANCELED) {
+                //update the map when TimeStampActivity finish
+                updateMapCursors();
+            }
+        }
     }
 
     @Override
