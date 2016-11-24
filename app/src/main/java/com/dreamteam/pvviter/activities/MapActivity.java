@@ -163,9 +163,16 @@ public class MapActivity extends AppCompatActivity implements Locator.Listener {
         Calendar calendarEnd = Calendar.getInstance();
         calendarEnd.setTimeInMillis(ms);
         Hashtable<Integer, Integer> dateDiff = DateManipulation.diffBetweenTwoDate(calendarEnd, Calendar.getInstance());
-        String timeLeft = String.format("%02d", dateDiff.get(DateManipulation.ELAPSED_HOURS)) + "h" + String.format("%02d", dateDiff.get(DateManipulation.ELAPSED_MINUTES));
+        String timeLeft =  String.format("%02d", dateDiff.get(DateManipulation.ELAPSED_HOURS)) + "h" + String.format("%02d", dateDiff.get(DateManipulation.ELAPSED_MINUTES));
 
-        this.addInfoOnMap(timeLeft, StringConversion.lengthToString(distance), DateManipulation.hourToString(time));
+        String routeTime =  DateManipulation.hourToStringHour(time);
+        routeTime = routeTime.replace(':', 'h');
+        if (time > 24)
+            routeTime = (int)(time/24) + "j" + routeTime;
+        if (dateDiff.get(DateManipulation.ELAPSED_DAYS ) > 0)  //Adds the days left when it's a very long walk
+            timeLeft = dateDiff.get(DateManipulation.ELAPSED_DAYS) + "j" + timeLeft;
+
+        this.addInfoOnMap(timeLeft, StringConversion.lengthToString(distance), routeTime);
     }
 
     /**
@@ -301,7 +308,6 @@ public class MapActivity extends AppCompatActivity implements Locator.Listener {
 
         return super.onOptionsItemSelected(item);
     }
-
 
 
     @Override

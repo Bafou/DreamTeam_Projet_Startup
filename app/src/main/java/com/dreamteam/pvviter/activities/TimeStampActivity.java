@@ -6,8 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -17,7 +15,6 @@ import android.widget.Toast;
 import com.shawnlin.numberpicker.NumberPicker;
 import com.dreamteam.pvviter.R;
 import java.util.Calendar;
-import java.util.Hashtable;
 
 import fragments.TimePickerFragment;
 import utils.Data_Storage;
@@ -52,8 +49,10 @@ public class TimeStampActivity extends AppCompatActivity implements NumberPicker
         }
         if(changeTimeMode){
             parkingTimeStore=getDataStorageParkingTime();
+
             ImageButton carPictureButton = (ImageButton) findViewById(R.id.car_picture_button);
             carPictureButton.setVisibility(View.INVISIBLE);
+            carPictureButton.setEnabled(false);
 
             TextView timeStampLabel = (TextView) findViewById(R.id.time_stamp_title);
             timeStampLabel.setText(R.string.add_car_time_label);
@@ -86,7 +85,7 @@ public class TimeStampActivity extends AppCompatActivity implements NumberPicker
      */
     public void customHoursNumberPicker(){
         numberPickerHours = (NumberPicker)  findViewById(R.id.number_picker_hours);
-        this.minuteStepSize = defaultMinuteStepSize;
+        minuteStepSize = defaultMinuteStepSize;
 
         assert numberPickerHours != null;
         //used to format our values with 2 numbers
@@ -127,7 +126,7 @@ public class TimeStampActivity extends AppCompatActivity implements NumberPicker
      * @param minuteStepSize
      */
     public void customMinutesNumberPicker(int minuteStepSize){
-        this.minuteStepSize = minuteStepSize;
+        TimeStampActivity.minuteStepSize = minuteStepSize;
         this.numberPickerMinutes.setMaxValue(59);
         customMinutesNumberPicker();
     }
@@ -156,11 +155,17 @@ public class TimeStampActivity extends AppCompatActivity implements NumberPicker
         newCal.add(Calendar.MINUTE, minutesToAdd);
 
 
-        //test if it's tomorrow
-        if(DateManipulation.isTomorrow(newCal)){
+        //Change the message if it's tomorrow
+        if(DateManipulation.isTomorrow(newCal))
             timeStampEndString += " " + getResources().getString(R.string.tomorrow_sentence);
-        }
+
         timeStampEndString += " " + DateManipulation.dateHourMinuteToString(newCal.getTime());
+
+        //Change the message if it's after tomorrow
+        if(DateManipulation.isAfterTomorrow(newCal))
+            timeStampEndString = getResources().getString(R.string.time_stamp_end) + " " + DateManipulation.dayAndMonthToString(newCal.getTime())
+                    + " " + getResources().getString(R.string.time_stamp_a) + " "  + DateManipulation.dateHourMinuteToString(newCal.getTime());
+
         assert timeStampEnd != null;
         timeStampEnd.setText(timeStampEndString);
 
@@ -189,7 +194,7 @@ public class TimeStampActivity extends AppCompatActivity implements NumberPicker
         Data_Storage.set_parking_end_time_in_milliseconds(getApplicationContext(), newCal.getTimeInMillis());
 
         if(isChangeTimeMode()){
-            //return intent for call onActivityResult mathode on MapActivity
+            //return intent for call onActivityResult method on MapActivity
             Intent returnIntent = new Intent();
             setResult(Activity.RESULT_CANCELED, returnIntent);
             finish();
