@@ -74,6 +74,11 @@ public class DateManipulation {
         return dateHourMinuteToString(calendar.getTime());
     }
 
+    /**
+     * Transform an hour number into a Calendar object
+     * @param hour The hour number
+     * @return The Calendar object
+     */
     public static Calendar hourToCalendar(double hour){
         int iHour = (int) hour;
         double dMin= (hour-iHour)*60;
