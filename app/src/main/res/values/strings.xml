@@ -25,4 +25,15 @@
     <string name="user_location_not_found">Connexion GPS perdue. L\'application va tenter de se reconnecter.</string>
     <string name="point_of_no_return_message_notification">Point de non retour atteint !</string>
     <string name="add_car_time_label">Ajouter une durée à l\'horodateur</string>
+    <string name="title_alert_dialog_back_to_timestamp">Retour sur l\'horodateur</string>
+    <string name="message_alert_dialog_back_to_timestamp">Souhaitez vous vraiment retourner sur le choix de l\'horodateur ?</string>
+    <string name="title_alert_dialog_back_to_start_activity">Retour sur la page d\'accueil</string>
+    <string name="message_alert_dialog_back_to_start_activity">Souhaitez vous vraiment retourner sur la page d\'accueil ?
+        Cette action supprimera toutes vos données.</string>
+    <string name="title_alert_dialog_exit_application">Quitter l\'application</string>
+    <string name="message_alert_dialog_exit_application">Souhaitez vous vraiment quitter PVviter et retourner sur l\'accueil android ?
+        Les tâches de fond pour vous notifier si un trajet est en cours resteront actives. </string>
+    <string name="positive_button_alert_dialog">Oui</string>
+    <string name="negative_button_alert_dialog">Non</string>
+    <string name="title_activity_start_activity">StartActivity</string>
 </resources>

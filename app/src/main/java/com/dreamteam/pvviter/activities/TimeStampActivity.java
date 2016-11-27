@@ -2,12 +2,12 @@ package com.dreamteam.pvviter.activities;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -17,9 +17,9 @@ import android.widget.Toast;
 import com.shawnlin.numberpicker.NumberPicker;
 import com.dreamteam.pvviter.R;
 import java.util.Calendar;
-import java.util.Hashtable;
 
 import fragments.TimePickerFragment;
+import services.File_IO;
 import utils.Data_Storage;
 import utils.DateManipulation;
 
@@ -38,12 +38,16 @@ public class TimeStampActivity extends AppCompatActivity implements NumberPicker
     private TimePickerFragment timePickerFragment = new TimePickerFragment();
     private boolean changeTimeMode=false;
     private long parkingTimeStore;
+    private String previousActivityName = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         overridePendingTransition(R.anim.fadein, R.anim.fadeout);
         setContentView(R.layout.activity_time_stamp);
+
+        Intent intent = getIntent();
+        previousActivityName = intent.getStringExtra("activity");
 
         //if the activity is call by "change_time" (map button)
         Bundle bundle = getIntent().getExtras();
@@ -195,7 +199,10 @@ public class TimeStampActivity extends AppCompatActivity implements NumberPicker
             finish();
         }else {
             Intent intent = new Intent(this, MapActivity.class);
+            //Used to know that the next activity was called by TimeStampActivity
+            intent.putExtra("activity",getString(R.string.title_activity_time_stamp));
             startActivity(intent);
+
         }
 
     }
@@ -225,11 +232,71 @@ public class TimeStampActivity extends AppCompatActivity implements NumberPicker
 
     @Override
     public void onBackPressed() {
-        if(isChangeTimeMode()){
-            finish();
-        }else {
-            moveTaskToBack(true);
+        String title = getString(R.string.title_alert_dialog_exit_application);
+        String message = getString(R.string.message_alert_dialog_exit_application);
+        String positiveButton = getString(R.string.positive_button_alert_dialog);
+        String negativeButton = getString(R.string.negative_button_alert_dialog);
+        AlertDialog.Builder alertDialog;
+
+        if(previousActivityName != null){
+            if(previousActivityName.equals(getString(R.string.title_activity_start_activity))){
+                title = getString(R.string.title_alert_dialog_back_to_start_activity);
+                message = getString(R.string.message_alert_dialog_back_to_start_activity);
+            }
+            alertDialog = resetOfDataAlertDialog(title,message,positiveButton,negativeButton);
+        } else {
+            alertDialog = moveTaskToBackAlertDialog(title,message,positiveButton,negativeButton);
         }
+        alertDialog.show();
+    }
+
+    /**
+     * Build an AlertDialog when we want to reset the data and go back to the startActivity
+     * @param title of the alert
+     * @param message of the alert
+     * @param positiveButton of the alert
+     * @param negativeButton of the alert
+     * @return
+     */
+    private AlertDialog.Builder resetOfDataAlertDialog(String title, String message, String positiveButton, String negativeButton){
+        return new AlertDialog.Builder(this)
+                .setTitle(title)
+                .setMessage(message)
+                .setPositiveButton(positiveButton, new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        File_IO.delete_all_files(getApplicationContext());
+
+                        Intent i = getBaseContext().getPackageManager()
+                                .getLaunchIntentForPackage(getBaseContext().getPackageName());
+                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(i);
+                    }
+                })
+                .setNegativeButton(negativeButton, null);
+    }
+
+    /**
+     * Build an AlertDialog when we want to move the task back
+     * @param title of the alert
+     * @param message of the alert
+     * @param positiveButton of the alert
+     * @param negativeButton of the alert
+     * @return
+     */
+    private AlertDialog.Builder moveTaskToBackAlertDialog(String title, String message, String positiveButton, String negativeButton){
+        return new AlertDialog.Builder(this)
+                .setTitle(title)
+                .setMessage(message)
+                .setPositiveButton(positiveButton, new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        moveTaskToBack(true);
+                    }
+                })
+                .setNegativeButton(negativeButton, null);
     }
 
 }

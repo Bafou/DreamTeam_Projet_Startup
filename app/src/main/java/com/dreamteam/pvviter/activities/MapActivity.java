@@ -55,11 +55,16 @@ public class MapActivity extends AppCompatActivity implements Locator.Listener {
     private Thread updateThread = null;
     private Polyline pathOverlay = null;
 
+    private String previousActivityName = null;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         overridePendingTransition(R.anim.fadein, R.anim.fadeout);
         setContentView(R.layout.activity_map);
+
+        Intent intent = getIntent();
+        previousActivityName = intent.getStringExtra("activity");
 
         initMap();
         setupCompass();
@@ -269,33 +274,13 @@ public class MapActivity extends AppCompatActivity implements Locator.Listener {
             startActivityForResult(intent,1);
         }
         if (id == R.id.action_reset) {
-            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-            alertDialogBuilder.setTitle(R.string.action_reset_title);
-            alertDialogBuilder.setMessage(R.string.action_reset_message);
-            alertDialogBuilder.setPositiveButton(R.string.action_reset_yes, new DialogInterface.OnClickListener() {
 
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    File_IO.delete_all_files(getApplicationContext());
-                    handler.removeCallbacks(runnable);
-
-                    Intent i = getBaseContext().getPackageManager()
-                            .getLaunchIntentForPackage(getBaseContext().getPackageName());
-                    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(i);
-                }
-            });
-
-            alertDialogBuilder.setNegativeButton(R.string.action_reset_no, new DialogInterface.OnClickListener() {
-
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.dismiss();
-                }
-            });
-
-
-            alertDialogBuilder.create().show();
+            String title = getString(R.string.action_reset_title);
+            String message = getString(R.string.action_reset_message);
+            String positiveButton = getString(R.string.positive_button_alert_dialog);
+            String negativeButton = getString(R.string.negative_button_alert_dialog);
+            AlertDialog.Builder alertDialog = resetOfDataAlertDialog(title, message, positiveButton, negativeButton);
+            alertDialog.show();
             return true;
         }
 
@@ -316,7 +301,97 @@ public class MapActivity extends AppCompatActivity implements Locator.Listener {
 
     @Override
     public void onBackPressed() {
-        moveTaskToBack(true);
+        String title = getString(R.string.title_alert_dialog_exit_application);
+        String message = getString(R.string.message_alert_dialog_exit_application);
+        String positiveButton = getString(R.string.positive_button_alert_dialog);
+        String negativeButton = getString(R.string.negative_button_alert_dialog);
+        AlertDialog.Builder alertDialog;
+
+        if(previousActivityName != null){
+            if(previousActivityName.equals(getString(R.string.title_activity_time_stamp))){
+                title = getString(R.string.title_alert_dialog_back_to_timestamp);
+                message = getString(R.string.message_alert_dialog_back_to_timestamp);
+            }
+            alertDialog = previousActivityAlertDialog(title,message,positiveButton,negativeButton);
+        } else {
+            alertDialog = moveTaskToBackAlertDialog(title,message,positiveButton,negativeButton);
+        }
+        alertDialog.show();
+
+    }
+
+    /**
+     * Build an AlertDialog when we want to come back to the previous activity
+     * @param title of the alert
+     * @param message of the alert
+     * @param positiveButton of the alert
+     * @param negativeButton of the alert
+     * @return
+     */
+    private AlertDialog.Builder previousActivityAlertDialog(String title, String message, String positiveButton, String negativeButton){
+        return new AlertDialog.Builder(this)
+                .setTitle(title)
+                .setMessage(message)
+                .setPositiveButton(positiveButton, new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        //Used to avoid calculus of the map when we go back to the previous activity
+                        handler.removeCallbacks(runnable);
+                        finish();
+                    }
+                })
+                .setNegativeButton(negativeButton, null);
+    }
+
+    /**
+     * Build an AlertDialog when we want to move the task back
+     * @param title of the alert
+     * @param message of the alert
+     * @param positiveButton of the alert
+     * @param negativeButton of the alert
+     * @return
+     */
+    private AlertDialog.Builder moveTaskToBackAlertDialog(String title, String message, String positiveButton, String negativeButton){
+        return new AlertDialog.Builder(this)
+                .setTitle(title)
+                .setMessage(message)
+                .setPositiveButton(positiveButton, new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        moveTaskToBack(true);
+                    }
+                })
+                .setNegativeButton(negativeButton, null);
+    }
+
+    /**
+     * Build an AlertDialog when we want to reset the data and go back to the startActivity
+     * @param title of the alert
+     * @param message of the alert
+     * @param positiveButton of the alert
+     * @param negativeButton of the alert
+     * @return
+     */
+    private AlertDialog.Builder resetOfDataAlertDialog(String title, String message, String positiveButton, String negativeButton){
+        return new AlertDialog.Builder(this)
+                .setTitle(title)
+                .setMessage(message)
+                .setPositiveButton(positiveButton, new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        File_IO.delete_all_files(getApplicationContext());
+                        handler.removeCallbacks(runnable);
+
+                        Intent i = getBaseContext().getPackageManager()
+                                .getLaunchIntentForPackage(getBaseContext().getPackageName());
+                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(i);
+                    }
+                })
+                .setNegativeButton(negativeButton, null);
     }
 
     /**
