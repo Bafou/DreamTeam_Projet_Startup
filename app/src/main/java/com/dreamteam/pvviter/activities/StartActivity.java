@@ -70,6 +70,7 @@ public class StartActivity extends Activity implements Locator.Listener {
         Data_Storage.set_user_location(getApplicationContext(), new GeoPoint(location.getLatitude(), location.getLongitude()));
 
         Intent intent = new Intent(this, TimeStampActivity.class);
+        intent.putExtra("activity",getString(R.string.title_activity_start_activity));
         startActivity(intent);
     }
 
