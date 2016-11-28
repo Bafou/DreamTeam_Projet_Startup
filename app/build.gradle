@@ -1,6 +1,14 @@
 apply plugin: 'com.android.application'
 
 android {
+    signingConfigs {
+        config {
+            keyAlias 'PVviterKey'
+            keyPassword System.getenv("KEYPWD")
+            storeFile file('../pvviter_keystore.jks')
+            storePassword System.getenv("KSTOREPWD")
+        }
+    }
     compileSdkVersion 23
     buildToolsVersion "23.0.2"
     lintOptions {
@@ -17,22 +25,22 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.config
         }
     }
     productFlavors {
-    }	
-	adbOptions {
-		timeOutInMs 20 * 60 * 1000  // 10 minutes
-		installOptions "-d","-t"
-	}
+    }
+    adbOptions {
+        timeOutInMs 20 * 60 * 1000  // 10 minutes
+        installOptions "-d", "-t"
+    }
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:23.1.1'
     compile 'com.android.support:design:23.1.1'
-
     //osmdroid dependencies
     compile 'org.osmdroid:osmdroid-android:5.5:release@aar'
     //https://github.com/ShawnLin013/NumberPicker
