@@ -28,7 +28,7 @@
             android:name=".activities.MapActivity"
             android:label="@string/title_activity_map"/>
         <activity android:name=".activities.CreditActivity"
-            android:label="@string/title_credit_activity"
+            android:label="@string/credit_informations"
             ></activity>
         <activity
             android:name=".activities.TimeStampActivity"
