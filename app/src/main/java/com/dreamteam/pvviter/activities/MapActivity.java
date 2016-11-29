@@ -44,12 +44,13 @@ import utils.MapFunctions;
 import utils.MathCalcul;
 import utils.Settings;
 
-public class MapActivity extends AppCompatActivity implements Locator.Listener {
+public class MapActivity extends AppCompatActivity {
 
     private MapView map;
     private Compass compass;
     private GeoPoint userLocation;
     private GeoPoint carLocation;
+    private Locator locator;
 
     //Needed to update the polyline
     private Thread updateThread = null;
@@ -61,9 +62,11 @@ public class MapActivity extends AppCompatActivity implements Locator.Listener {
         overridePendingTransition(R.anim.fadein, R.anim.fadeout);
         setContentView(R.layout.activity_map);
 
+        setTitle(R.string.activity_map_title);
+
         initMap();
         setupCompass();
-        setupUserPositionHandler();
+        setupLocator();
 
         /* Path disappearing when zoomed in correction */
         map.setMapListener(new MapListener() {
@@ -79,23 +82,24 @@ public class MapActivity extends AppCompatActivity implements Locator.Listener {
                 return false;
             }
         });
-
     }
 
-    private final Handler handler = new Handler();
-    private final Runnable runnable = new Runnable() {
-        @Override
-        public void run() {
-            updateUserLocation();
-            handler.postDelayed(this, 10000);
-        }
-    };
+    public void setupLocator(){
+        locator = new Locator(this){
+            @Override
+            public void onLocationChanged(Location location) {
+                updateGPSCoordinates();
 
-    private void setupUserPositionHandler() {
-        //Create an handler to update the user location regularly.
-        handler.postDelayed(runnable, 10000);
+                //Data_Storage.set_car_location(MapActivity.this, new GeoPoint(location.getLatitude(), location.getLongitude()));
+                Data_Storage.set_user_location(MapActivity.this, new GeoPoint(location.getLatitude(), location.getLongitude()));
+
+                //carLocation = Data_Storage.get_car_location(MapActivity.this);
+                userLocation = Data_Storage.get_user_location(MapActivity.this);
+
+                updateMapCursors();
+            }
+        };
     }
-
 
     /**
      * Add information on the map view
@@ -169,15 +173,6 @@ public class MapActivity extends AppCompatActivity implements Locator.Listener {
     }
 
     /**
-     * Ask the locator for the new position of the user
-     */
-    private void updateUserLocation() {
-        Locator loc = new Locator(this);
-        loc.getLocation(Locator.Method.GPS, this);
-        checkPointOfNoReturn();
-    }
-
-    /**
      * Temporary method to check if the point of no return was reached
      * if yes, raise a notification
      */
@@ -212,28 +207,6 @@ public class MapActivity extends AppCompatActivity implements Locator.Listener {
         }
 
     }
-
-    /**
-     * Update the user Location with the new position and update the map information.
-     *
-     * @param location The new location
-     */
-    @Override
-    public void onLocationFound(Location location) {
-        userLocation = new GeoPoint(location.getLatitude(), location.getLongitude());
-        Data_Storage.set_user_location(getApplicationContext(), userLocation);
-
-        updateMapCursors();
-    }
-
-    /**
-     * the location gps can't be found, a message is show
-     */
-    @Override
-    public void onLocationNotFound() {
-        Toast.makeText(this, R.string.user_location_not_found, Toast.LENGTH_SHORT).show();
-    }
-
 
     /**
      * Initialize the orientation listener needed by the map to point in the director of the phone
@@ -277,7 +250,7 @@ public class MapActivity extends AppCompatActivity implements Locator.Listener {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     File_IO.delete_all_files(getApplicationContext());
-                    handler.removeCallbacks(runnable);
+                    //handler.removeCallbacks(runnable);
 
                     Intent i = getBaseContext().getPackageManager()
                             .getLaunchIntentForPackage(getBaseContext().getPackageName());

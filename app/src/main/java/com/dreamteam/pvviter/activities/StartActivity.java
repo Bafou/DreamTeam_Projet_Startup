@@ -19,9 +19,7 @@ import services.File_IO;
 import services.Locator;
 import utils.Data_Storage;
 
-import static services.Locator.Method.GPS;
-
-public class StartActivity extends Activity implements Locator.Listener {
+public class StartActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,80 +39,32 @@ public class StartActivity extends Activity implements Locator.Listener {
      * @param view
      */
     public void saveLocation(View view) {
-        Locator locator = new Locator(this.getApplicationContext());
+
+        Locator locator = new Locator(this){
+            @Override
+            public void onLocationChanged(Location location) {
+                updateGPSCoordinates();
+
+                Data_Storage.set_car_location(StartActivity.this, new GeoPoint(location.getLatitude(), location.getLongitude()));
+                Data_Storage.set_user_location(StartActivity.this, new GeoPoint(location.getLatitude(), location.getLongitude()));
+
+                Intent intent = new Intent(StartActivity.this, TimeStampActivity.class);
+                StartActivity.this.startActivity(intent);
+                this.stopUsingGPS();
+            }
+        };
+
+
         findViewById(R.id.buttonSavePosition).setVisibility(View.INVISIBLE);
         findViewById(R.id.loading).setVisibility(View.VISIBLE);
 
-        if (locator.isEnableGPS()){
-            //Log.d("saveLocation","gps active" );
-
-            //getLocation is used to get the location into our implemented Listener methods onLocationFound - onLocationNotFound
-            locator.getLocation(GPS, this);
-
+        if (locator.getIsGPSTrackingEnabled()){
+            locator.getLocation();
+            locator.updateGPSCoordinates();
         }else{
-            GPSDisabledAlert();
+            locator.showSettingsAlert();
         }
 
-
-
-    }
-
-    /**
-     * directly save the location in our private variable latitude and longitude
-     *
-     * @param location
-     */
-    @Override
-    public void onLocationFound(Location location) {
-        Data_Storage.set_car_location(getApplicationContext(), new GeoPoint(location.getLatitude(), location.getLongitude()));
-        Data_Storage.set_user_location(getApplicationContext(), new GeoPoint(location.getLatitude(), location.getLongitude()));
-
-        Intent intent = new Intent(this, TimeStampActivity.class);
-        startActivity(intent);
-    }
-
-    /**
-     * the lcoation gps can't be found, a message is show
-     */
-    @Override
-    public void onLocationNotFound() {
-        Context context = getApplicationContext();
-        CharSequence text = getString(R.string.gps_not_functionnal);
-        int duration = Toast.LENGTH_SHORT;
-
-        findViewById(R.id.buttonSavePosition).setVisibility(View.VISIBLE);
-        findViewById(R.id.loading).setVisibility(View.INVISIBLE);
-
-        Toast toast = Toast.makeText(context, text, duration);
-        toast.show();
-    }
-
-    /**
-     * show message for enable gps
-     */
-    private void GPSDisabledAlert(){
-        findViewById(R.id.buttonSavePosition).setVisibility(View.VISIBLE);
-        findViewById(R.id.loading).setVisibility(View.INVISIBLE);
-
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-        alertDialogBuilder.setMessage(R.string.gps_activation_authorization)
-                .setCancelable(false)
-                .setPositiveButton("OK",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                Intent callGPSSettingIntent = new Intent(
-                                        android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                                startActivity(callGPSSettingIntent);
-                            }
-                        });
-        alertDialogBuilder.setNegativeButton("Quitter",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dialog.cancel();
-                    }
-                });
-        AlertDialog alert = alertDialogBuilder.create();
-        alert.show();
     }
 
     /**

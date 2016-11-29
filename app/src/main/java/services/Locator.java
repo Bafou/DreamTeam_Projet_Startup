@@ -1,171 +1,241 @@
 package services;
 
-import android.Manifest;
-import android.app.Activity;
+import java.io.IOException;
+import java.util.List;
+import java.util.Locale;
+
+import android.app.AlertDialog;
+import android.app.Service;
 import android.content.Context;
-import android.content.pm.PackageManager;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.net.NetworkInfo;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
+import android.os.IBinder;
+import android.provider.Settings;
 import android.util.Log;
 
-import com.dreamteam.pvviter.activities.StartActivity;
+import com.dreamteam.pvviter.R;
 
 /**
- * Get device location using various methods
+ * Create this Class from tutorial :
+ * http://www.androidhive.info/2012/07/android-gps-location-manager-tutorial
  *
- * @author emil http://stackoverflow.com/users/220710/emil
+ * For Geocoder read this : http://stackoverflow.com/questions/472313/android-reverse-geocoding-getfromlocation
+ *
  */
-public class Locator implements LocationListener {
 
-    static private final String LOG_TAG = "locator";
+public abstract class Locator extends Service implements LocationListener {
 
-    static private final int TIME_INTERVAL = 100; // minimum time between updates in milliseconds
-    static private final int DISTANCE_INTERVAL = 1; // minimum distance between updates in meters
+    // Get Class Name
+    private static String TAG = Locator.class.getName();
 
-    static public enum Method {
-        NETWORK,
-        GPS,
-        NETWORK_THEN_GPS
-    }
+    private final Context mContext;
 
-    private Context context;
-    private LocationManager locationManager;
-    private Locator.Method method;
-    private Locator.Listener callback;
+    // flag for GPS Status
+    boolean isGPSEnabled = false;
+
+    // flag for network status
+    boolean isNetworkEnabled = false;
+
+    // flag for GPS Tracking is enabled
+    boolean isGPSTrackingEnabled = false;
+
+    Location location;
+    double latitude = 0;
+    double longitude = 0;
+
+    // How many Geocoder should return our GPSTracker
+    int geocoderMaxResults = 1;
+
+    // The minimum distance to change updates in meters
+    private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 75; //75; // 75 meters
+
+    // The minimum time between updates in milliseconds
+    private static final long MIN_TIME_BW_UPDATES = 1000 * 10; // 10 seconds
+
+    // Declaring a Location Manager
+    protected LocationManager locationManager;
+
+    // Store LocationManager.GPS_PROVIDER or LocationManager.NETWORK_PROVIDER information
+    private String provider_info;
 
     public Locator(Context context) {
-        super();
-        this.context = context;
-        this.locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+        this.mContext = context;
+        getLocation();
     }
 
     /**
-     * the gps is Enable
-     * @return true if gps is enable, else false
+     * Try to get my current location by GPS or Network Provider
      */
-    public boolean isEnableGPS() {
-        return this.locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-    }
+    public void getLocation() {
 
+        try {
+            locationManager = (LocationManager) mContext.getSystemService(LOCATION_SERVICE);
 
-    public void getLocation(Locator.Method method, Locator.Listener callback) {
-        this.method = method;
-        this.callback = callback;
-        switch (this.method) {
-            case NETWORK:
-            case NETWORK_THEN_GPS:
-                getLocationNetwork();
-                break;
-            case GPS:
-                getLocationGPS();
-                break;
+            //getting GPS status
+            isGPSEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+
+            //getting network status
+            isNetworkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+
+            // Try to get location if you GPS Service is enabled
+            if (isGPSEnabled) {
+                this.isGPSTrackingEnabled = true;
+
+                Log.d(TAG, "Application use GPS Service");
+
+                /*
+                 * This provider determines location using
+                 * satellites. Depending on conditions, this provider may take a while to return
+                 * a location fix.
+                 */
+
+                provider_info = LocationManager.GPS_PROVIDER;
+
+            } else if (isNetworkEnabled) { // Try to get location if you Network Service is enabled
+                this.isGPSTrackingEnabled = true;
+
+                Log.d(TAG, "Application use Network State to get GPS coordinates");
+
+                /*
+                 * This provider determines location based on
+                 * availability of cell tower and WiFi access points. Results are retrieved
+                 * by means of a network lookup.
+                 */
+                provider_info = LocationManager.NETWORK_PROVIDER;
+
+            }
+
+            // Application can use GPS or Network Provider
+            if (!provider_info.isEmpty()) {
+                locationManager.requestLocationUpdates(
+                        provider_info,
+                        MIN_TIME_BW_UPDATES,
+                        MIN_DISTANCE_CHANGE_FOR_UPDATES,
+                        this
+                );
+
+                if (locationManager != null) {
+                    location = locationManager.getLastKnownLocation(provider_info);
+                    updateGPSCoordinates();
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            //e.printStackTrace();
+            Log.e(TAG, "Impossible to connect to LocationManager", e);
         }
     }
 
-    private void getLocationNetwork(){
-        Location networkLocation = this.locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-        if (networkLocation != null) {
-            Log.d(LOG_TAG, "Last known location found for network provider : " + networkLocation.toString());
-            this.callback.onLocationFound(networkLocation);
-        } else {
-            Log.d(LOG_TAG, "Request updates from network provider.");
-            this.requestUpdates(LocationManager.NETWORK_PROVIDER);
+    /**
+     * Update GPSTracker latitude and longitude
+     */
+    public void updateGPSCoordinates() {
+        if (location != null) {
+            latitude = location.getLatitude();
+            longitude = location.getLongitude();
         }
     }
 
-    private void getLocationGPS(){
-        //Location gpsLocation = this.locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        //if (gpsLocation != null) {
-        //    Log.d(LOG_TAG, "Last known location found for GPS provider : " + gpsLocation.toString());
-        //    this.callback.onLocationFound(gpsLocation);
-       // } else {
+    /**
+     * GPSTracker latitude getter and setter
+     * @return latitude
+     */
+    public double getLatitude() {
+        if (location != null) {
+            latitude = location.getLatitude();
+        }
 
-            Log.d(LOG_TAG, "Request updates from GPS provider.");
-            this.requestUpdates(LocationManager.GPS_PROVIDER);
-        //}
+        return latitude;
     }
 
-    private void requestUpdates(String provider) {
-        switch (provider){
-            case LocationManager.NETWORK_PROVIDER :
-                requestUpdateNetwork(provider);
-                break;
-            case LocationManager.GPS_PROVIDER :
-                requestUpdateGPS(provider);
-                break;
-            default:
-                this.onProviderDisabled(provider);
-                break;
+    /**
+     * GPSTracker longitude getter and setter
+     * @return
+     */
+    public double getLongitude() {
+        if (location != null) {
+            longitude = location.getLongitude();
+        }
+
+        return longitude;
+    }
+
+    /**
+     * GPSTracker isGPSTrackingEnabled getter.
+     * Check GPS/wifi is enabled
+     */
+    public boolean getIsGPSTrackingEnabled() {
+
+        return this.isGPSTrackingEnabled;
+    }
+
+    /**
+     * Stop using GPS listener
+     * Calling this method will stop using GPS in your app
+     */
+    public void stopUsingGPS() {
+        if (locationManager != null) {
+            locationManager.removeUpdates(Locator.this);
         }
     }
 
-    private void requestUpdateNetwork(String provider){
-        if(Connectivity.isConnected(this.context)){
-            Log.d(LOG_TAG, "Network connected, start listening : " + provider);
-            this.locationManager.requestLocationUpdates(provider, TIME_INTERVAL, DISTANCE_INTERVAL, this);
-        } else {
-            Log.d(LOG_TAG, "Proper network not connected for provider : " + provider);
-            this.onProviderDisabled(provider);
-        }
-    }
+    /**
+     * Function to show settings alert dialog
+     */
+    public void showSettingsAlert() {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(mContext);
 
-    private void requestUpdateGPS(String provider){
-        if(Connectivity.isConnectedMobile(this.context)){
-            Log.d(LOG_TAG, "Mobile network connected, start listening : " + provider);
-            this.locationManager.requestLocationUpdates(provider, TIME_INTERVAL, DISTANCE_INTERVAL, this);
-        } else {
-            Log.d(LOG_TAG, "Proper network not connected for provider : " + provider);
-            this.onProviderDisabled(provider);
-        }
-    }
+        //Setting Dialog Title
+        alertDialog.setTitle(R.string.gps_error);
 
+        //Setting Dialog Message
+        alertDialog.setMessage(R.string.gps_activation_authorization);
 
-    public void cancel() {
-        Log.d(LOG_TAG, "Locating canceled.");
-        this.locationManager.removeUpdates(this);
-    }
+        //On Pressing Setting button
+        alertDialog.setPositiveButton(R.string.action_settings, new DialogInterface.OnClickListener() {
 
-    @Override
-    public void onLocationChanged(Location location) {
-        Log.d(LOG_TAG, "Location found : " + location.getLatitude() + ", " + location.getLongitude() + (location.hasAccuracy() ? " : +- " + location.getAccuracy() + " meters" : ""));
-        this.locationManager.removeUpdates(this);
-        this.callback.onLocationFound(location);
-    }
+            @Override
+            public void onClick(DialogInterface dialog, int which)
+            {
+                Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                mContext.startActivity(intent);
+            }
+        });
 
-    @Override
-    public void onProviderDisabled(String provider) {
-        Log.d(LOG_TAG, "Provider disabled : " + provider);
-        if (this.method == Locator.Method.NETWORK_THEN_GPS
-                && provider.contentEquals(LocationManager.NETWORK_PROVIDER)) {
-            // Network provider disabled, try GPS
-            Log.d(LOG_TAG, "Requesst updates from GPS provider, network provider disabled.");
-            this.requestUpdates(LocationManager.GPS_PROVIDER);
-        } else {
-            this.locationManager.removeUpdates(this);
-            this.callback.onLocationNotFound();
-        }
-    }
+        //On pressing cancel button
+        alertDialog.setNegativeButton(R.string.gps_cancel, new DialogInterface.OnClickListener() {
 
-    @Override
-    public void onProviderEnabled(String provider) {
-        Log.d(LOG_TAG, "Provider enabled : " + provider);
+            @Override
+            public void onClick(DialogInterface dialog, int which)
+            {
+                dialog.cancel();
+            }
+        });
+
+        alertDialog.show();
     }
 
     @Override
     public void onStatusChanged(String provider, int status, Bundle extras) {
-        Log.d(LOG_TAG, "Provided status changed : " + provider + " : status : " + status);
     }
 
-    public interface Listener {
-        void onLocationFound(Location location);
-
-        void onLocationNotFound();
+    @Override
+    public void onProviderEnabled(String provider) {
     }
 
+    @Override
+    public void onProviderDisabled(String provider) {
+    }
+
+    @Override
+    public IBinder onBind(Intent intent) {
+        return null;
+    }
 }
