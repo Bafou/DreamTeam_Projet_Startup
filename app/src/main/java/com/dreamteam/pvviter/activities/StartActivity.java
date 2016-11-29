@@ -55,6 +55,7 @@ public class StartActivity extends Activity {
         };
 
 
+
         findViewById(R.id.buttonSavePosition).setVisibility(View.INVISIBLE);
         findViewById(R.id.loading).setVisibility(View.VISIBLE);
 
