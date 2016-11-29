@@ -23,13 +23,16 @@ public class DateManipulation {
     public static Boolean isTomorrow(Calendar cal){
         Calendar tomorrow = Calendar.getInstance();
         tomorrow.add(Calendar.DAY_OF_MONTH,1);
-        return cal.get(Calendar.DATE) == tomorrow.get(Calendar.DATE);
+        return cal.get(Calendar.DAY_OF_MONTH) == tomorrow.get(Calendar.DAY_OF_MONTH) && cal.get(Calendar.MONTH) == tomorrow.get(Calendar.MONTH) && cal.get(Calendar.YEAR) == tomorrow.get(Calendar.YEAR);
     }
 
     public static Boolean isAfterTomorrow(Calendar cal){
-        Calendar tomorrow = Calendar.getInstance();
-        tomorrow.add(Calendar.DAY_OF_MONTH,2);
-        return cal.get(Calendar.DATE) >= tomorrow.get(Calendar.DATE);
+
+        Calendar afterTomorrow = Calendar.getInstance();
+        afterTomorrow.add(Calendar.DAY_OF_MONTH,2);
+        diffBetweenTwoDate(afterTomorrow, cal);
+
+        return cal.get(Calendar.DAY_OF_MONTH) >= afterTomorrow.get(Calendar.DAY_OF_MONTH) && cal.get(Calendar.MONTH) >= afterTomorrow.get(Calendar.MONTH) && cal.get(Calendar.YEAR) >= afterTomorrow.get(Calendar.YEAR);
     }
 
     /**
