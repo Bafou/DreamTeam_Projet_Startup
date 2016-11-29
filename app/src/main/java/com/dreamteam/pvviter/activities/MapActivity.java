@@ -56,6 +56,9 @@ public class MapActivity extends AppCompatActivity {
     private Thread updateThread = null;
     private Polyline pathOverlay = null;
 
+    private Thread threadUI = null;
+    private boolean closingActivity = false;
+
     private String previousActivityName = null;
 
     @Override
@@ -73,6 +76,7 @@ public class MapActivity extends AppCompatActivity {
         initMap();
         setupCompass();
         setupLocator();
+        initUpdateUIThread();
 
         /* Path disappearing when zoomed in correction */
         map.setMapListener(new MapListener() {
@@ -90,18 +94,16 @@ public class MapActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Setup the locator, so the use location is updated regurlarly
+     */
     public void setupLocator(){
         locator = new Locator(this){
             @Override
             public void onLocationChanged(Location location) {
                 updateGPSCoordinates();
-
-                //Data_Storage.set_car_location(MapActivity.this, new GeoPoint(location.getLatitude(), location.getLongitude()));
                 Data_Storage.set_user_location(MapActivity.this, new GeoPoint(location.getLatitude(), location.getLongitude()));
-
-                //carLocation = Data_Storage.get_car_location(MapActivity.this);
                 userLocation = Data_Storage.get_user_location(MapActivity.this);
-
                 updateMapCursors();
             }
         };
@@ -179,7 +181,7 @@ public class MapActivity extends AppCompatActivity {
         routeTime = routeTime.replace(':', 'h');
         if (time > 24)
             routeTime = (int)(time/24) + "j" + routeTime;
-        if (dateDiff.get(DateManipulation.ELAPSED_DAYS ) > 0)  //Adds the days left when it's a very long walk
+        if (dateDiff.get(DateManipulation.ELAPSED_DAYS) > 0)  //Adds the days left when it's a very long walk
             timeLeft = dateDiff.get(DateManipulation.ELAPSED_DAYS) + "j" + timeLeft;
 
         this.addInfoOnMap(timeLeft, StringConversion.lengthToString(distance), routeTime);
@@ -316,8 +318,8 @@ public class MapActivity extends AppCompatActivity {
                 {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        //Used to avoid calculus of the map when we go back to the previous activity
-                        handler.removeCallbacks(runnable);
+                        locator.stopUsingGPS();
+                        closingActivity = true;
                         finish();
                     }
                 })
@@ -362,9 +364,9 @@ public class MapActivity extends AppCompatActivity {
                 {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        locator.stopUsingGPS();
+                        closingActivity = true;
                         File_IO.delete_all_files(getApplicationContext());
-                        handler.removeCallbacks(runnable);
-
                         Intent i = getBaseContext().getPackageManager()
                                 .getLaunchIntentForPackage(getBaseContext().getPackageName());
                         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -383,6 +385,34 @@ public class MapActivity extends AppCompatActivity {
         if (updateThread == null || !updateThread.isAlive()) {
             updateRoute(context);
         }
+    }
+
+    /**
+     * Create a Thread that update the UI every 10 seconds
+     */
+    private void initUpdateUIThread(){
+        threadUI = new Thread() {
+
+            @Override
+            public void run() {
+                try {
+                    while (!isInterrupted() && !closingActivity) {
+                        Thread.sleep(10000);
+                        if(!closingActivity){
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    updateMapCursors();
+                                }
+                            });
+                        }
+                    }
+                } catch (InterruptedException e) {
+                }
+            }
+        };
+
+        threadUI.start();
     }
 
     /**
