@@ -33,7 +33,7 @@
         Cette action supprimera toutes vos données.</string>
     <string name="title_alert_dialog_exit_application">Quitter l\'application</string>
     <string name="message_alert_dialog_exit_application">Souhaitez vous vraiment quitter PVviter et retourner sur l\'accueil android ?
-        Les tâches de fond pour vous notifier si un trajet est en cours resteront actives. </string>
+        Une tâche de fond restera active pour vous notifier sur le trajet en cours. </string>
     <string name="positive_button_alert_dialog">Oui</string>
     <string name="negative_button_alert_dialog">Non</string>
     <string name="title_activity_start_activity">StartActivity</string>

@@ -278,6 +278,7 @@ public class MapActivity extends AppCompatActivity implements Locator.Listener {
             Intent intent = new Intent(this, TimeStampActivity.class);
             intent.putExtra("changeTimeMode", true);
             //use startActivityForResult for call onActivityResult when TimeStampActivity finish
+            intent.putExtra("activity",getString(R.string.title_activity_map));
             startActivityForResult(intent,1);
         }
         if (id == R.id.action_reset) {
