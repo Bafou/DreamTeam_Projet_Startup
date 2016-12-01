@@ -9,6 +9,7 @@ import android.location.Location;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.method.LinkMovementMethod;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
@@ -123,6 +124,9 @@ public class MapActivity extends AppCompatActivity implements Locator.Listener {
      * Initialize the map to it's default behavior
      */
     private void initMap() {
+        TextView osm_copyright_text = (TextView) findViewById(R.id.OSM_Copyright_Text);
+        osm_copyright_text.setMovementMethod(LinkMovementMethod.getInstance());
+
         /*
          * The user ID is set to prevent getting banned from the osm servers
          * It must be set to a unique application ID and not a user ID

@@ -37,4 +37,6 @@
     <string name="positive_button_alert_dialog">Oui</string>
     <string name="negative_button_alert_dialog">Non</string>
     <string name="title_activity_start_activity">StartActivity</string>
+    <string name="OSM_Credits">© les contributeurs d’<a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a></string>
+
 </resources>
