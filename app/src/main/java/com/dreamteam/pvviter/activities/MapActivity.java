@@ -7,10 +7,12 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Handler;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -168,6 +170,11 @@ public class MapActivity extends AppCompatActivity {
         //MapFunctions.drawRoute(map, startPoint, endPoint);
         Road road = MapFunctions.getRoad(map, userLocation, carLocation);
         Double distance = road.mLength;
+        if(distance<=Settings.CAR_FOUND_DISTANCE){
+            this.showFAB(true);
+        }else{
+            this.showFAB(false);
+        }
         Double time = MathCalcul.getTime(distance, Settings.SPEED);
         MapFunctions.drawRoute(map, road);
 
@@ -462,5 +469,30 @@ public class MapActivity extends AppCompatActivity {
                 iterator.remove();
             }
         }
+    }
+
+    /**
+     * show or hide a floating android button
+     * @param show true for show the button, false for hide it
+     */
+    private void showFAB(boolean show){
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        if(show){
+            fab.show();
+        }else{
+            fab.hide();
+        }
+    }
+
+    /**
+     * show dialog for reset data
+     * @param view
+     */
+    public void fabClicked(View view){
+        String title = getString(R.string.action_reset_title2);
+        String positiveButton = getString(R.string.positive_button_alert_dialog);
+        String negativeButton = getString(R.string.negative_button_alert_dialog);
+        AlertDialog.Builder alertDialog = resetOfDataAlertDialog(title, "", positiveButton, negativeButton);
+        alertDialog.show();
     }
 }
