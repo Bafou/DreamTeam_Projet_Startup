@@ -12,7 +12,9 @@
     <string name="button_save_position_text">Enregistrer la position</string>
     <string name="title_activity_map">MapActivity</string>
     <string name="gps_not_functionnal">"Impossible de récupérer la position."</string>
+    <string name="gps_error">"Erreur"</string>
     <string name="gps_activation_authorization">"Le GPS est désactivé. Voulez-vous l'activer ?"</string>
+    <string name="gps_cancel">"Annuler"</string>
     <string name="action_getMap">Afficher la carte</string>
     <string name="timeDelimiter">:</string>
     <string name="time_stamp_end">Fin :</string>
@@ -26,6 +28,7 @@
     <string name="user_location_not_found">Connexion GPS perdue. L\'application va tenter de se reconnecter.</string>
     <string name="point_of_no_return_message_notification">Point de non retour atteint !</string>
     <string name="add_car_time_label">Ajouter une durée à l\'horodateur</string>
+    <string name="activity_map_title">Carte</string>
     <string name="title_alert_dialog_back_to_timestamp">Retour sur l\'horodateur</string>
     <string name="message_alert_dialog_back_to_timestamp">Souhaitez vous vraiment retourner sur le choix de l\'horodateur ?</string>
     <string name="title_alert_dialog_back_to_start_activity">Retour sur la page d\'accueil</string>

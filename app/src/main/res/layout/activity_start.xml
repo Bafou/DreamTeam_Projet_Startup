@@ -67,7 +67,8 @@
                     android:layout_height="wrap_content"
                     android:indeterminate="true"
                     android:layout_centerHorizontal="true"
-                    android:layout_centerVertical="true"/>
+                    android:layout_centerVertical="true"
+                    android:visibility="invisible"/>
 
                 <ImageButton
                     android:layout_width="29dp"
