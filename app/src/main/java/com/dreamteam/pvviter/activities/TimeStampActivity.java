@@ -250,7 +250,11 @@ public class TimeStampActivity extends AppCompatActivity implements NumberPicker
             if(previousActivityName.equals(getString(R.string.title_activity_start_activity))){
                 title = getString(R.string.title_alert_dialog_back_to_start_activity);
                 message = getString(R.string.message_alert_dialog_back_to_start_activity);
+            } else if(previousActivityName.equals(getString(R.string.title_activity_map))){
+                finish();
+                return;
             }
+
             alertDialog = resetOfDataAlertDialog(title,message,positiveButton,negativeButton);
         } else {
             alertDialog = moveTaskToBackAlertDialog(title,message,positiveButton,negativeButton);

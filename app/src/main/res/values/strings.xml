@@ -12,7 +12,9 @@
     <string name="button_save_position_text">Enregistrer la position</string>
     <string name="title_activity_map">MapActivity</string>
     <string name="gps_not_functionnal">"Impossible de récupérer la position."</string>
+    <string name="gps_error">"Erreur"</string>
     <string name="gps_activation_authorization">"Le GPS est désactivé. Voulez-vous l'activer ?"</string>
+    <string name="gps_cancel">"Annuler"</string>
     <string name="action_getMap">Afficher la carte</string>
     <string name="timeDelimiter">:</string>
     <string name="time_stamp_end">Fin :</string>
@@ -42,6 +44,7 @@
     <string name="credit_icon_roundicons">Icons made by <a href="http://www.flaticon.com/authors/roundicons-freebies" title="Roundicons Freebies">Roundicons Freebies</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></string>
     <string name="credit_icon_rami">Icons made by <a href="http://www.flaticon.com/authors/rami-mcmin" title="Rami McMin">Rami McMin</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></string>
     <string name="add_car_time_label">Ajouter une durée à l\'horodateur</string>
+    <string name="activity_map_title">Carte</string>
     <string name="title_alert_dialog_back_to_timestamp">Retour sur l\'horodateur</string>
     <string name="message_alert_dialog_back_to_timestamp">Souhaitez vous vraiment retourner sur le choix de l\'horodateur ?</string>
     <string name="title_alert_dialog_back_to_start_activity">Retour sur la page d\'accueil</string>
@@ -49,7 +52,7 @@
         Cette action supprimera toutes vos données.</string>
     <string name="title_alert_dialog_exit_application">Quitter l\'application</string>
     <string name="message_alert_dialog_exit_application">Souhaitez vous vraiment quitter PVviter et retourner sur l\'accueil android ?
-        Les tâches de fond pour vous notifier si un trajet est en cours resteront actives. </string>
+        Une tâche de fond restera active pour vous notifier sur le trajet en cours. </string>
     <string name="positive_button_alert_dialog">Oui</string>
     <string name="negative_button_alert_dialog">Non</string>
     <string name="title_activity_start_activity">StartActivity</string>

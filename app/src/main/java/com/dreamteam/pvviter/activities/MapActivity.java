@@ -44,16 +44,20 @@ import utils.MapFunctions;
 import utils.MathCalcul;
 import utils.Settings;
 
-public class MapActivity extends AppCompatActivity implements Locator.Listener {
+public class MapActivity extends AppCompatActivity {
 
     private MapView map;
     private Compass compass;
     private GeoPoint userLocation;
     private GeoPoint carLocation;
+    private Locator locator;
 
     //Needed to update the polyline
     private Thread updateThread = null;
     private Polyline pathOverlay = null;
+
+    private Thread threadUI = null;
+    private boolean closingActivity = false;
 
     private String previousActivityName = null;
 
@@ -63,12 +67,16 @@ public class MapActivity extends AppCompatActivity implements Locator.Listener {
         overridePendingTransition(R.anim.fadein, R.anim.fadeout);
         setContentView(R.layout.activity_map);
 
+        setTitle(R.string.activity_map_title);
+
         Intent intent = getIntent();
         previousActivityName = intent.getStringExtra("activity");
 
+
         initMap();
         setupCompass();
-        setupUserPositionHandler();
+        setupLocator();
+        initUpdateUIThread();
 
         /* Path disappearing when zoomed in correction */
         map.setMapListener(new MapListener() {
@@ -84,23 +92,22 @@ public class MapActivity extends AppCompatActivity implements Locator.Listener {
                 return false;
             }
         });
-
     }
 
-    private final Handler handler = new Handler();
-    private final Runnable runnable = new Runnable() {
-        @Override
-        public void run() {
-            updateUserLocation();
-            handler.postDelayed(this, 10000);
-        }
-    };
-
-    private void setupUserPositionHandler() {
-        //Create an handler to update the user location regularly.
-        handler.postDelayed(runnable, 10000);
+    /**
+     * Setup the locator, so the use location is updated regurlarly
+     */
+    public void setupLocator(){
+        locator = new Locator(this){
+            @Override
+            public void onLocationChanged(Location location) {
+                updateGPSCoordinates();
+                Data_Storage.set_user_location(MapActivity.this, new GeoPoint(location.getLatitude(), location.getLongitude()));
+                userLocation = Data_Storage.get_user_location(MapActivity.this);
+                updateMapCursors();
+            }
+        };
     }
-
 
     /**
      * Add information on the map view
@@ -174,19 +181,10 @@ public class MapActivity extends AppCompatActivity implements Locator.Listener {
         routeTime = routeTime.replace(':', 'h');
         if (time > 24)
             routeTime = (int)(time/24) + "j" + routeTime;
-        if (dateDiff.get(DateManipulation.ELAPSED_DAYS ) > 0)  //Adds the days left when it's a very long walk
+        if (dateDiff.get(DateManipulation.ELAPSED_DAYS) > 0)  //Adds the days left when it's a very long walk
             timeLeft = dateDiff.get(DateManipulation.ELAPSED_DAYS) + "j" + timeLeft;
 
         this.addInfoOnMap(timeLeft, StringConversion.lengthToString(distance), routeTime);
-    }
-
-    /**
-     * Ask the locator for the new position of the user
-     */
-    private void updateUserLocation() {
-        Locator loc = new Locator(this);
-        loc.getLocation(Locator.Method.GPS, this);
-        checkPointOfNoReturn();
     }
 
     /**
@@ -226,28 +224,6 @@ public class MapActivity extends AppCompatActivity implements Locator.Listener {
     }
 
     /**
-     * Update the user Location with the new position and update the map information.
-     *
-     * @param location The new location
-     */
-    @Override
-    public void onLocationFound(Location location) {
-        userLocation = new GeoPoint(location.getLatitude(), location.getLongitude());
-        Data_Storage.set_user_location(getApplicationContext(), userLocation);
-
-        updateMapCursors();
-    }
-
-    /**
-     * the location gps can't be found, a message is show
-     */
-    @Override
-    public void onLocationNotFound() {
-        Toast.makeText(this, R.string.user_location_not_found, Toast.LENGTH_SHORT).show();
-    }
-
-
-    /**
      * Initialize the orientation listener needed by the map to point in the director of the phone
      */
     private void setupCompass() {
@@ -282,6 +258,7 @@ public class MapActivity extends AppCompatActivity implements Locator.Listener {
             Intent intent = new Intent(this, TimeStampActivity.class);
             intent.putExtra("changeTimeMode", true);
             //use startActivityForResult for call onActivityResult when TimeStampActivity finish
+            intent.putExtra("activity",getString(R.string.title_activity_map));
             startActivityForResult(intent,1);
         }
         if (id == R.id.action_reset) {
@@ -346,8 +323,8 @@ public class MapActivity extends AppCompatActivity implements Locator.Listener {
                 {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        //Used to avoid calculus of the map when we go back to the previous activity
-                        handler.removeCallbacks(runnable);
+                        locator.stopUsingGPS();
+                        closingActivity = true;
                         finish();
                     }
                 })
@@ -392,9 +369,9 @@ public class MapActivity extends AppCompatActivity implements Locator.Listener {
                 {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        locator.stopUsingGPS();
+                        closingActivity = true;
                         File_IO.delete_all_files(getApplicationContext());
-                        handler.removeCallbacks(runnable);
-
                         Intent i = getBaseContext().getPackageManager()
                                 .getLaunchIntentForPackage(getBaseContext().getPackageName());
                         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -413,6 +390,34 @@ public class MapActivity extends AppCompatActivity implements Locator.Listener {
         if (updateThread == null || !updateThread.isAlive()) {
             updateRoute(context);
         }
+    }
+
+    /**
+     * Create a Thread that update the UI every 10 seconds
+     */
+    private void initUpdateUIThread(){
+        threadUI = new Thread() {
+
+            @Override
+            public void run() {
+                try {
+                    while (!isInterrupted() && !closingActivity) {
+                        Thread.sleep(10000);
+                        if(!closingActivity){
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    updateMapCursors();
+                                }
+                            });
+                        }
+                    }
+                } catch (InterruptedException e) {
+                }
+            }
+        };
+
+        threadUI.start();
     }
 
     /**
