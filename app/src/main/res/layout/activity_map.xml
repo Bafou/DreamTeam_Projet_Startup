@@ -6,9 +6,12 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     tools:context="com.dreamteam.pvviter.activities.MapActivity">
+
+
     <org.osmdroid.views.MapView android:id="@+id/map"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent" />
+
 
     <android.support.design.widget.FloatingActionButton
         xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -16,7 +19,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginRight="16dp"
-        android:layout_marginBottom="48dp"
+        android:layout_marginBottom="64dp"
         android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
         android:clickable="true"
@@ -24,7 +27,20 @@
         android:src="@drawable/ic_thumb_up"
         app:backgroundTint="@color/colorAccent"/>
 
+    <TextView
+        android:id="@+id/OSM_Copyright_Text"
+        android:background="#00555599"
+        android:textColor="#88ffffff"
+        android:text="@string/OSM_Credits"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_above="@+id/measures"
+        android:layout_alignParentRight="true"
+        />
+
+
     <TableLayout
+        android:id="@+id/measures"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="#ffffffff"
@@ -36,7 +52,7 @@
         <TableRow
             android:layout_height="wrap_content"
             android:layout_width="fill_parent"
-            android:background="#ffffffff" >
+            android:background="#00000000" >
             <TextView
                 android:layout_weight="1"
                 android:background="@color/colorPrimary"
@@ -64,7 +80,7 @@
         <TableRow
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:background="#ffffffff" >
+            android:background="#00000000" >
             <TextView
                 android:id="@+id/time_car"
                 android:layout_weight="1"
@@ -91,17 +107,4 @@
 
     </TableLayout>
 
-
-    <!--<TextView
-        android:id="@+id/infosMap"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:gravity="bottom"
-        android:layout_alignParentBottom="true"
-        android:background="@color/colorPrimary"
-        android:paddingTop="5dp"
-        android:paddingBottom="5dp"
-        android:textColor="#ffffffff"
-        android:paddingLeft="5dp"
-        android:paddingRight="5dp" />-->
 </RelativeLayout>
