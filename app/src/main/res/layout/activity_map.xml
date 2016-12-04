@@ -25,7 +25,7 @@
         android:clickable="true"
         android:onClick="fabClicked"
         android:src="@drawable/ic_thumb_up"
-        app:backgroundTint="@color/colorAccent"/>
+        app:backgroundTint="@color/red"/>
 
     <TextView
         android:id="@+id/OSM_Copyright_Text"
