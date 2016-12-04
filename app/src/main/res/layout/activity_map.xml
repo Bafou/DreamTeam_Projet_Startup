@@ -22,7 +22,7 @@
         android:clickable="true"
         android:onClick="fabClicked"
         android:src="@drawable/ic_thumb_up"
-        app:backgroundTint="@color/colorPrimary"/>
+        app:backgroundTint="@color/colorAccent"/>
 
     <TableLayout
         android:layout_width="wrap_content"
