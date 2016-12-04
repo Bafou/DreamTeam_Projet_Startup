@@ -4,6 +4,7 @@
     <string name="action_reset">Remettre à zéro</string>
     <string name="action_change_time">Changer la durée</string>
     <string name="action_reset_title">Êtes-vous certain de vouloir supprimer les données ?</string>
+    <string name="action_reset_title2">Avez-vous retrouvé votre voiture ?</string>
     <string name="action_reset_message">Cette action supprimera votre position, la position de la voiture ainsi que la durée de fin de l\'horodateur</string>
     <string name="action_reset_yes">Oui</string>
     <string name="action_reset_no">Non</string>
