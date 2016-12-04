@@ -30,6 +30,9 @@
             android:name=".activities.MapActivity"
             android:label="@string/title_activity_map" android:screenOrientation="portrait"
             android:configChanges="orientation|keyboardHidden"/>
+        <activity android:name=".activities.CreditActivity"
+            android:label="@string/credit_informations"
+            ></activity>
         <activity
             android:name=".activities.TimeStampActivity"
             android:label="@string/title_activity_time_stamp"

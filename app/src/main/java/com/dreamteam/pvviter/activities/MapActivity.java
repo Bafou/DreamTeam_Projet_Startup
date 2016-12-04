@@ -253,7 +253,11 @@ public class MapActivity extends AppCompatActivity {
         if (id == R.id.action_settings) {
             return true;
         }
+        if (id == R.id.action_credit) {
+            Intent credit = new Intent(this, CreditActivity.class);
+            startActivity(credit);
         //user want change car park time
+        }
         if (id == R.id.action_change_time) {
             Intent intent = new Intent(this, TimeStampActivity.class);
             intent.putExtra("changeTimeMode", true);

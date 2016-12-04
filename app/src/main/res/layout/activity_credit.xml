@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginLeft="20dp"
+    android:layout_marginRight="20dp">
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/credit_project"
+        android:layout_marginTop="10dp"
+        android:gravity="center"
+        android:textColor="@color/white"/>
+
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/credit_creator"
+            android:textSize="30dp"
+            android:layout_marginTop="10dp"
+            android:gravity="center"
+            android:textColor="@color/white"/>
+
+        <TextView
+            android:id="@+id/github_link_lucas"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/author_lucas"
+            android:gravity="center"
+            android:textColor="@color/white"/>
+        <TextView
+            android:id="@+id/github_link_quentin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/author_quentin"
+            android:gravity="center"
+            android:textColor="@color/white"/>
+        <TextView
+            android:id="@+id/github_link_florian"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/author_florian"
+            android:gravity="center"
+            android:textColor="@color/white"/>
+        <TextView
+            android:id="@+id/github_link_geoffrey"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/author_geoffrey"
+            android:gravity="center"
+            android:textColor="@color/white"/>
+        <TextView
+            android:id="@+id/github_link_remi"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/author_remi"
+            android:gravity="center"
+            android:textColor="@color/white"/>
+        <TextView
+            android:id="@+id/github_link_antoine"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/author_antoine"
+            android:gravity="center"
+            android:textColor="@color/white"/>
+
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:gravity="center"
+        android:text="@string/credit_code"
+        android:textColor="@color/white"/>
+    <TextView
+        android:id="@+id/github_link"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/credit_githublink"
+        android:gravity="center"
+        android:textColor="@color/colorPrimaryDark"/>
+    <TextView
+        android:id="@+id/flaticon_1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:gravity="center"
+        android:text="@string/credit_icon_rami"
+        android:textColor="@color/white"/>
+    <TextView
+        android:id="@+id/flaticon_2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:gravity="center"
+        android:text="@string/credit_icon_roundicons"
+        android:textColor="@color/white"/>
+</LinearLayout>
