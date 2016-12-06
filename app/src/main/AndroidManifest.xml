@@ -30,8 +30,10 @@
         <activity
             android:name=".activities.TimeStampActivity"
             android:label="@string/title_activity_time_stamp"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
-        <activity android:name=".activities.SettingsActivity"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activities.SettingsActivity"
+            android:label="@string/title_activity_settings" />
     </application>
 
 </manifest>

@@ -20,25 +20,26 @@ android {
         }
     }
     productFlavors {
-    }	
-	adbOptions {
-		timeOutInMs 20 * 60 * 1000  // 10 minutes
-		installOptions "-d","-t"
-	}
+    }
+    adbOptions {
+        timeOutInMs 20 * 60 * 1000  // 10 minutes
+        installOptions "-d", "-t"
+    }
 }
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    testCompile 'junit:junit:4.12'
-    compile 'com.android.support:appcompat-v7:23.1.1'
-    compile 'com.android.support:design:23.1.1'
 
     //osmdroid dependencies
     compile 'org.osmdroid:osmdroid-android:5.5:release@aar'
     //https://github.com/ShawnLin013/NumberPicker
     //personalised number picker
+    compile 'com.android.support:appcompat-v7:23.4.0'
+    compile 'com.android.support:design:23.4.0'
     compile 'com.shawnlin:number-picker:2.1.0'
     compile 'com.github.MKergall:osmbonuspack:6.0'
-
+    testCompile 'junit:junit:4.12'
     androidTestCompile 'junit:junit:4.12'
+
+    compile 'com.github.jayschwa:AndroidSliderPreference:-SNAPSHOT'
 }

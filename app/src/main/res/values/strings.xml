@@ -27,6 +27,34 @@
     <string name="walk_speed">Vitesse de marche</string>
     <string name="nrp_delay">Point de non retour</string>
 
-    <string name="walk_speed_summ">Votre vitesse de marche pour atteindre à temps votre voiture : $1 km/h</string>
-    <string name="nrp_delay_summ">Période avant la prévention via la notification du point de non retour : $1 km/h</string>
+    <string name="title_activity_settings">Settings</string>
+
+    <!-- Strings related to Settings -->
+
+    <!-- Categories -->
+    <string name="cat_vitesse">Temps</string>
+    <string name="cat_default">Paramètres</string>
+
+    <!--  -->
+    <string name="slider_walking_speed_title">Vitesse de marche - %1$s km/h</string>
+    <string-array name="slider_walking_speed_summaries">
+        <item>Lent</item> <!-- 2 to 3 -->
+        <item>Moyen</item>   <!-- 4 to 6 -->
+        <item>Rapide</item>     <!-- 7 to 10 -->
+    </string-array>
+    <item name="slider_walking_speed_default" format="float" type="string">0.35</item>
+    <string name="slider_walking_speed_message">Votre vitesse de marche pour atteindre à temps votre voiture</string>
+
+    <!--  -->
+    <string name="slider_nrp_delay_title">Période avant PNR (Minutes)</string>
+    <string-array name="slider_nrp_delay_summaries">
+        <item>5</item>
+        <item>10</item>
+        <item>15</item>
+        <item>30</item>
+        <item>60</item>
+    </string-array>
+    <item name="slider_nrp_delay_default" format="float" type="string">0.45</item>
+    <string name="slider_nrp_delay_message">Période avant la prévention via la notification du point de non retour</string>
+
 </resources>

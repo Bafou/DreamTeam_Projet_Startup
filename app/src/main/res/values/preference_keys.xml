@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item type="string" name="pref_walking_speed">walking_speed</item>
+    <item type="string" name="pref_nrp_delay">nrp_delay</item>
+    <item type="string" name="pref_raz">raz_settings</item>
+</resources>
