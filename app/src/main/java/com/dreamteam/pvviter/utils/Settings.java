@@ -1,4 +1,4 @@
-package utils;
+package com.dreamteam.pvviter.utils;
 
 /**
  * Created by Admin on 02/11/2016.

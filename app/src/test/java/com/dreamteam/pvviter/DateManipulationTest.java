@@ -1,13 +1,16 @@
 package com.dreamteam.pvviter;
 
-import org.junit.Test;
+import com.dreamteam.pvviter.utils.DateManipulation;
 
-import static org.junit.Assert.*;
+import org.junit.Test;
 
 import java.util.Calendar;
 import java.util.Hashtable;
 
-import utils.DateManipulation;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Created by FlorianDoublet on 30/10/2016.

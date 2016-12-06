@@ -3,18 +3,16 @@ package com.dreamteam.pvviter;
 import android.app.Application;
 import android.test.ApplicationTestCase;
 
+import com.dreamteam.pvviter.services.FileIO;
+import com.dreamteam.pvviter.utils.Data_Storage;
+
 import org.junit.Test;
 import org.osmdroid.util.GeoPoint;
-
-import java.io.File;
-
-import services.File_IO;
-import utils.Data_Storage;
 
 /**
  * @author Lucas Delvallet https://github.com/LucasDelvallet
  */
-public class Data_Storage_Test  extends ApplicationTestCase<Application> {
+public class Data_Storage_Test extends ApplicationTestCase<Application> {
     public Data_Storage_Test() {
         super(Application.class);
     }
@@ -58,10 +56,10 @@ public class Data_Storage_Test  extends ApplicationTestCase<Application> {
         Data_Storage.set_car_location(mContext, new GeoPoint(9.3, 3.11));
         Data_Storage.set_user_location(mContext, new GeoPoint(9.3, 3.11));
 
-        File_IO.delete_all_files(mContext);
+        FileIO.delete_all_files(mContext);
 
-        assertFalse(File_IO.does_file_exist(mContext, File_IO.PARKING_END_TIME));
-        assertFalse(File_IO.does_file_exist(mContext, File_IO.CAR_LOCATION_FILE));
-        assertFalse(File_IO.does_file_exist(mContext, File_IO.USER_LOCATION_FILE));
+        assertFalse(FileIO.does_file_exist(mContext, FileIO.PARKING_END_TIME));
+        assertFalse(FileIO.does_file_exist(mContext, FileIO.CAR_LOCATION_FILE));
+        assertFalse(FileIO.does_file_exist(mContext, FileIO.USER_LOCATION_FILE));
     }
 }

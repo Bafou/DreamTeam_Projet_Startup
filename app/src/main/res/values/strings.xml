@@ -42,8 +42,8 @@
     <string name="credit_code">Le code source de l\'application est disponible sur Github : </string>
     <string name="credit_githublink"><a href="https://github.com/Bafou/PVviter">https://github.com/Bafou/PVviter</a></string>
     <string name="credit_thanks">Nous remercions les projets : Open Street Map, OSMDroid, NumberPicker</string>
-    <string name="credit_icon_roundicons">Icons made by <a href="http://www.flaticon.com/authors/roundicons-freebies" title="Roundicons Freebies">Roundicons Freebies</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></string>
-    <string name="credit_icon_rami">Icons made by <a href="http://www.flaticon.com/authors/rami-mcmin" title="Rami McMin">Rami McMin</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></string>
+    <string name="credit_icon_roundicons">Icons made by <a href="http://www.flaticon.com/authors/roundicons-freebies" title="Roundicons Freebies">Roundicons Freebies</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" target="_blank" title="Creative Commons BY 3.0">CC 3.0 BY</a></string>
+    <string name="credit_icon_rami">Icons made by <a href="http://www.flaticon.com/authors/rami-mcmin" title="Rami McMin">Rami McMin</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" target="_blank" title="Creative Commons BY 3.0">CC 3.0 BY</a></string>
     <string name="add_car_time_label">Ajouter une durée à l\'horodateur</string>
     <string name="activity_map_title">Carte</string>
     <string name="title_alert_dialog_back_to_timestamp">Retour sur l\'horodateur</string>

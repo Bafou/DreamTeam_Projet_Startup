@@ -1,4 +1,4 @@
-package services;
+package com.dreamteam.pvviter.services;
 
 import android.content.Context;
 import android.hardware.Sensor;
