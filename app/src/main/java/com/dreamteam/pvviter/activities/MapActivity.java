@@ -6,19 +6,27 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Location;
-import android.os.Handler;
+import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.text.method.LinkMovementMethod;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.dreamteam.pvviter.BuildConfig;
 import com.dreamteam.pvviter.R;
+import com.dreamteam.pvviter.services.Compass;
+import com.dreamteam.pvviter.services.FileIO;
+import com.dreamteam.pvviter.services.Locator;
+import com.dreamteam.pvviter.services.PointOfNoReturnNotification;
+import com.dreamteam.pvviter.utils.Data_Storage;
+import com.dreamteam.pvviter.utils.DateManipulation;
+import com.dreamteam.pvviter.utils.MapFunctions;
+import com.dreamteam.pvviter.utils.MathCalcul;
+import com.dreamteam.pvviter.utils.Settings;
+import com.dreamteam.pvviter.utils.StringConversion;
 
 import org.osmdroid.api.IMapController;
 import org.osmdroid.bonuspack.routing.Road;
@@ -35,17 +43,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Hashtable;
 import java.util.Iterator;
-
-import services.Compass;
-import services.File_IO;
-import services.Locator;
-import services.PointOfNoReturnNotification;
-import utils.Data_Storage;
-import utils.DateManipulation;
-import utils.StringConversion;
-import utils.MapFunctions;
-import utils.MathCalcul;
-import utils.Settings;
 
 public class MapActivity extends AppCompatActivity {
 
@@ -100,8 +97,8 @@ public class MapActivity extends AppCompatActivity {
     /**
      * Setup the locator, so the use location is updated regurlarly
      */
-    public void setupLocator(){
-        locator = new Locator(this){
+    public void setupLocator() {
+        locator = new Locator(this) {
             @Override
             public void onLocationChanged(Location location) {
                 updateGPSCoordinates();
@@ -174,9 +171,9 @@ public class MapActivity extends AppCompatActivity {
         //MapFunctions.drawRoute(map, startPoint, endPoint);
         Road road = MapFunctions.getRoad(map, userLocation, carLocation);
         Double distance = road.mLength;
-        if(distance<=Settings.CAR_FOUND_DISTANCE){
+        if (distance <= Settings.CAR_FOUND_DISTANCE) {
             this.showFAB(true);
-        }else{
+        } else {
             this.showFAB(false);
         }
         Double time = MathCalcul.getTime(distance, Settings.SPEED);
@@ -186,12 +183,12 @@ public class MapActivity extends AppCompatActivity {
         Calendar calendarEnd = Calendar.getInstance();
         calendarEnd.setTimeInMillis(ms);
         Hashtable<Integer, Integer> dateDiff = DateManipulation.diffBetweenTwoDate(calendarEnd, Calendar.getInstance());
-        String timeLeft =  String.format("%02d", dateDiff.get(DateManipulation.ELAPSED_HOURS)) + "h" + String.format("%02d", dateDiff.get(DateManipulation.ELAPSED_MINUTES));
+        String timeLeft = String.format("%02d", dateDiff.get(DateManipulation.ELAPSED_HOURS)) + "h" + String.format("%02d", dateDiff.get(DateManipulation.ELAPSED_MINUTES));
 
-        String routeTime =  DateManipulation.hourToStringHour(time);
+        String routeTime = DateManipulation.hourToStringHour(time);
         routeTime = routeTime.replace(':', 'h');
         if (time > 24)
-            routeTime = (int)(time/24) + "j" + routeTime;
+            routeTime = (int) (time / 24) + "j" + routeTime;
         if (dateDiff.get(DateManipulation.ELAPSED_DAYS) > 0)  //Adds the days left when it's a very long walk
             timeLeft = dateDiff.get(DateManipulation.ELAPSED_DAYS) + "j" + timeLeft;
 
@@ -263,14 +260,14 @@ public class MapActivity extends AppCompatActivity {
         if (id == R.id.action_credit) {
             Intent credit = new Intent(this, CreditActivity.class);
             startActivity(credit);
-        //user want change car park time
+            //user want change car park time
         }
         if (id == R.id.action_change_time) {
             Intent intent = new Intent(this, TimeStampActivity.class);
             intent.putExtra("changeTimeMode", true);
             //use startActivityForResult for call onActivityResult when TimeStampActivity finish
-            intent.putExtra("activity",getString(R.string.title_activity_map));
-            startActivityForResult(intent,1);
+            intent.putExtra("activity", getString(R.string.title_activity_map));
+            startActivityForResult(intent, 1);
         }
         if (id == R.id.action_reset) {
 
@@ -305,14 +302,14 @@ public class MapActivity extends AppCompatActivity {
         String negativeButton = getString(R.string.negative_button_alert_dialog);
         AlertDialog.Builder alertDialog;
 
-        if(previousActivityName != null){
-            if(previousActivityName.equals(getString(R.string.title_activity_time_stamp))){
+        if (previousActivityName != null) {
+            if (previousActivityName.equals(getString(R.string.title_activity_time_stamp))) {
                 title = getString(R.string.title_alert_dialog_back_to_timestamp);
                 message = getString(R.string.message_alert_dialog_back_to_timestamp);
             }
-            alertDialog = previousActivityAlertDialog(title,message,positiveButton,negativeButton);
+            alertDialog = previousActivityAlertDialog(title, message, positiveButton, negativeButton);
         } else {
-            alertDialog = moveTaskToBackAlertDialog(title,message,positiveButton,negativeButton);
+            alertDialog = moveTaskToBackAlertDialog(title, message, positiveButton, negativeButton);
         }
         alertDialog.show();
 
@@ -320,18 +317,18 @@ public class MapActivity extends AppCompatActivity {
 
     /**
      * Build an AlertDialog when we want to come back to the previous activity
-     * @param title of the alert
-     * @param message of the alert
+     *
+     * @param title          of the alert
+     * @param message        of the alert
      * @param positiveButton of the alert
      * @param negativeButton of the alert
      * @return
      */
-    private AlertDialog.Builder previousActivityAlertDialog(String title, String message, String positiveButton, String negativeButton){
+    private AlertDialog.Builder previousActivityAlertDialog(String title, String message, String positiveButton, String negativeButton) {
         return new AlertDialog.Builder(this)
                 .setTitle(title)
                 .setMessage(message)
-                .setPositiveButton(positiveButton, new DialogInterface.OnClickListener()
-                {
+                .setPositiveButton(positiveButton, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         locator.stopUsingGPS();
@@ -344,18 +341,18 @@ public class MapActivity extends AppCompatActivity {
 
     /**
      * Build an AlertDialog when we want to move the task back
-     * @param title of the alert
-     * @param message of the alert
+     *
+     * @param title          of the alert
+     * @param message        of the alert
      * @param positiveButton of the alert
      * @param negativeButton of the alert
      * @return
      */
-    private AlertDialog.Builder moveTaskToBackAlertDialog(String title, String message, String positiveButton, String negativeButton){
+    private AlertDialog.Builder moveTaskToBackAlertDialog(String title, String message, String positiveButton, String negativeButton) {
         return new AlertDialog.Builder(this)
                 .setTitle(title)
                 .setMessage(message)
-                .setPositiveButton(positiveButton, new DialogInterface.OnClickListener()
-                {
+                .setPositiveButton(positiveButton, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         moveTaskToBack(true);
@@ -366,23 +363,23 @@ public class MapActivity extends AppCompatActivity {
 
     /**
      * Build an AlertDialog when we want to reset the data and go back to the startActivity
-     * @param title of the alert
-     * @param message of the alert
+     *
+     * @param title          of the alert
+     * @param message        of the alert
      * @param positiveButton of the alert
      * @param negativeButton of the alert
      * @return
      */
-    private AlertDialog.Builder resetOfDataAlertDialog(String title, String message, String positiveButton, String negativeButton){
+    private AlertDialog.Builder resetOfDataAlertDialog(String title, String message, String positiveButton, String negativeButton) {
         return new AlertDialog.Builder(this)
                 .setTitle(title)
                 .setMessage(message)
-                .setPositiveButton(positiveButton, new DialogInterface.OnClickListener()
-                {
+                .setPositiveButton(positiveButton, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         locator.stopUsingGPS();
                         closingActivity = true;
-                        File_IO.delete_all_files(getApplicationContext());
+                        FileIO.delete_all_files(getApplicationContext());
                         Intent i = getBaseContext().getPackageManager()
                                 .getLaunchIntentForPackage(getBaseContext().getPackageName());
                         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -406,7 +403,7 @@ public class MapActivity extends AppCompatActivity {
     /**
      * Create a Thread that update the UI every 10 seconds
      */
-    private void initUpdateUIThread(){
+    private void initUpdateUIThread() {
         threadUI = new Thread() {
 
             @Override
@@ -414,7 +411,7 @@ public class MapActivity extends AppCompatActivity {
                 try {
                     while (!isInterrupted() && !closingActivity) {
                         Thread.sleep(10000);
-                        if(!closingActivity){
+                        if (!closingActivity) {
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
@@ -481,22 +478,24 @@ public class MapActivity extends AppCompatActivity {
 
     /**
      * show or hide a floating android button
+     *
      * @param show true for show the button, false for hide it
      */
-    private void showFAB(boolean show){
+    private void showFAB(boolean show) {
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        if(show){
+        if (show) {
             fab.show();
-        }else{
+        } else {
             fab.hide();
         }
     }
 
     /**
      * show dialog for reset data
+     *
      * @param view
      */
-    public void fabClicked(View view){
+    public void fabClicked(View view) {
         String title = getString(R.string.action_reset_title2);
         String positiveButton = getString(R.string.positive_button_alert_dialog);
         String negativeButton = getString(R.string.negative_button_alert_dialog);

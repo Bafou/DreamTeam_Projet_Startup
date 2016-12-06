@@ -1,4 +1,4 @@
-package utils;
+package com.dreamteam.pvviter.utils;
 
 import android.graphics.Color;
 import android.support.v4.content.ContextCompat;

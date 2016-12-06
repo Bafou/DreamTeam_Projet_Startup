@@ -1,16 +1,10 @@
-package services;
-
-import java.io.IOException;
-import java.util.List;
-import java.util.Locale;
+package com.dreamteam.pvviter.services;
 
 import android.app.AlertDialog;
 import android.app.Service;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.location.Address;
-import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -24,43 +18,32 @@ import com.dreamteam.pvviter.R;
 /**
  * Create this Class from tutorial :
  * http://www.androidhive.info/2012/07/android-gps-location-manager-tutorial
- *
+ * <p/>
  * For Geocoder read this : http://stackoverflow.com/questions/472313/android-reverse-geocoding-getfromlocation
- *
  */
 
 public abstract class Locator extends Service implements LocationListener {
 
+    // The minimum distance to change updates in meters
+    private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 10; // 10 meters
+    // The minimum time between updates in milliseconds
+    private static final long MIN_TIME_BW_UPDATES = 1000 * 10; // 10 seconds
     // Get Class Name
     private static String TAG = Locator.class.getName();
-
     private final Context mContext;
-
+    // Declaring a Location Manager
+    protected LocationManager locationManager;
     // flag for GPS Status
     boolean isGPSEnabled = false;
-
     // flag for network status
     boolean isNetworkEnabled = false;
-
     // flag for GPS Tracking is enabled
     boolean isGPSTrackingEnabled = false;
-
     Location location;
     double latitude = 0;
     double longitude = 0;
-
     // How many Geocoder should return our GPSTracker
     int geocoderMaxResults = 1;
-
-    // The minimum distance to change updates in meters
-    private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 10; // 10 meters
-
-    // The minimum time between updates in milliseconds
-    private static final long MIN_TIME_BW_UPDATES = 1000 * 10; // 10 seconds
-
-    // Declaring a Location Manager
-    protected LocationManager locationManager;
-
     // Store LocationManager.GPS_PROVIDER or LocationManager.NETWORK_PROVIDER information
     private String provider_info;
 
@@ -125,9 +108,7 @@ public abstract class Locator extends Service implements LocationListener {
                     updateGPSCoordinates();
                 }
             }
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             //e.printStackTrace();
             Log.e(TAG, "Impossible to connect to LocationManager", e);
         }
@@ -145,6 +126,7 @@ public abstract class Locator extends Service implements LocationListener {
 
     /**
      * GPSTracker latitude getter and setter
+     *
      * @return latitude
      */
     public double getLatitude() {
@@ -157,6 +139,7 @@ public abstract class Locator extends Service implements LocationListener {
 
     /**
      * GPSTracker longitude getter and setter
+     *
      * @return
      */
     public double getLongitude() {
@@ -202,8 +185,7 @@ public abstract class Locator extends Service implements LocationListener {
         alertDialog.setPositiveButton(R.string.action_settings, new DialogInterface.OnClickListener() {
 
             @Override
-            public void onClick(DialogInterface dialog, int which)
-            {
+            public void onClick(DialogInterface dialog, int which) {
                 Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
                 mContext.startActivity(intent);
             }
@@ -213,8 +195,7 @@ public abstract class Locator extends Service implements LocationListener {
         alertDialog.setNegativeButton(R.string.gps_cancel, new DialogInterface.OnClickListener() {
 
             @Override
-            public void onClick(DialogInterface dialog, int which)
-            {
+            public void onClick(DialogInterface dialog, int which) {
                 dialog.cancel();
             }
         });

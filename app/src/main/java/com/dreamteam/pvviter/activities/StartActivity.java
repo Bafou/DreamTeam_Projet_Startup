@@ -2,22 +2,18 @@ package com.dreamteam.pvviter.activities;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
 
 import com.dreamteam.pvviter.R;
+import com.dreamteam.pvviter.services.FileIO;
+import com.dreamteam.pvviter.services.Locator;
+import com.dreamteam.pvviter.utils.Data_Storage;
 
 import org.osmdroid.util.GeoPoint;
-
-import services.File_IO;
-import services.Locator;
-import utils.Data_Storage;
 
 public class StartActivity extends Activity {
     @Override
@@ -26,7 +22,7 @@ public class StartActivity extends Activity {
         overridePendingTransition(R.anim.fadein, R.anim.fadeout);
         setContentView(R.layout.activity_start);
 
-        if(File_IO.does_file_exist(getApplicationContext(), File_IO.PARKING_END_TIME)){
+        if (FileIO.does_file_exist(getApplicationContext(), FileIO.PARKING_END_TIME)) {
             Intent intent = new Intent(this, MapActivity.class);
             startActivity(intent);
         }
@@ -40,7 +36,7 @@ public class StartActivity extends Activity {
      */
     public void saveLocation(View view) {
 
-        Locator locator = new Locator(this){
+        Locator locator = new Locator(this) {
             @Override
             public void onLocationChanged(Location location) {
                 updateGPSCoordinates();
@@ -55,14 +51,13 @@ public class StartActivity extends Activity {
         };
 
 
-
         findViewById(R.id.buttonSavePosition).setVisibility(View.INVISIBLE);
         findViewById(R.id.loading).setVisibility(View.VISIBLE);
 
-        if (locator.getIsGPSTrackingEnabled()){
+        if (locator.getIsGPSTrackingEnabled()) {
             locator.getLocation();
             locator.updateGPSCoordinates();
-        }else{
+        } else {
             locator.showSettingsAlert();
         }
 
@@ -71,7 +66,7 @@ public class StartActivity extends Activity {
     /**
      * Display a pop-up to help the user with explanation messages.
      */
-    public void displayHelpPopUp(View view){
+    public void displayHelpPopUp(View view) {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
         alertDialogBuilder.setMessage(getString(R.string.start_page_text_1) + "\r\n\n" + getString(R.string.start_page_text_2))
                 .setCancelable(false)

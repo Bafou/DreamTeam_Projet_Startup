@@ -1,4 +1,4 @@
-package services;
+package com.dreamteam.pvviter.services;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -7,13 +7,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
+
 import com.dreamteam.pvviter.R;
 import com.dreamteam.pvviter.activities.MapActivity;
 
 
 /**
  * Create a show the notification of the return
- *
+ * <p/>
  * Created by FlorianDoublet on 13/11/2016.
  */
 public class PointOfNoReturnNotification {
@@ -24,6 +25,7 @@ public class PointOfNoReturnNotification {
 
     /**
      * Build and show the notification
+     *
      * @param context is te context of the app
      */
     public PointOfNoReturnNotification(Context context) {
@@ -50,11 +52,12 @@ public class PointOfNoReturnNotification {
 
     /**
      * Create a PendingIntent to the given classActivity
-     * @param context is the context of the app
+     *
+     * @param context      is the context of the app
      * @param classActvity is the activity we want to be redirected
      * @return
      */
-    private PendingIntent createPendintIntentToAnAcitivity(Context context , Class classActvity) {
+    private PendingIntent createPendintIntentToAnAcitivity(Context context, Class classActvity) {
         // Creates an explicit intent for an Activity in your app
         Intent resultIntent = new Intent(context, classActvity);
         // The stack builder object will contain an artificial back stack for the

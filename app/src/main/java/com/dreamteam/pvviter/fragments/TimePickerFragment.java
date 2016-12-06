@@ -1,30 +1,26 @@
-package fragments;
+package com.dreamteam.pvviter.fragments;
 
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.TimePickerDialog;
 import android.os.Bundle;
 import android.text.format.DateFormat;
-import android.util.Log;
 import android.widget.TimePicker;
 
 import com.dreamteam.pvviter.activities.TimeStampActivity;
+import com.dreamteam.pvviter.utils.DateManipulation;
 
 import java.util.Calendar;
-import java.util.Date;
 import java.util.Hashtable;
-import java.util.concurrent.TimeUnit;
-
-import utils.DateManipulation;
 
 /**
  * Created by FlorianDoublet on 28/10/2016.
  */
-public class TimePickerFragment extends DialogFragment implements TimePickerDialog.OnTimeSetListener{
+public class TimePickerFragment extends DialogFragment implements TimePickerDialog.OnTimeSetListener {
 
     private TimeStampActivity timeStampActivity = null;
 
-    public void setTimeStampActivity(TimeStampActivity timeStampActivity){
+    public void setTimeStampActivity(TimeStampActivity timeStampActivity) {
         this.timeStampActivity = timeStampActivity;
     }
 
@@ -32,10 +28,10 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         // Use the current time as the default values for the picker
         Calendar c = Calendar.getInstance();
-        if(timeStampActivity.isChangeTimeMode()){
+        if (timeStampActivity.isChangeTimeMode()) {
             c.setTimeInMillis(timeStampActivity.getParkingTimeStore());
         }
-        
+
         c.add(Calendar.HOUR_OF_DAY, timeStampActivity.getNumberPickerHours().getValue());
         c.add(Calendar.MINUTE, timeStampActivity.getNumberPickerMinutes().getValue() * TimeStampActivity.getMinuteStepSize());
 
@@ -51,14 +47,14 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
         //set a call with the new parameters for hours and minutes
         Calendar cal = Calendar.getInstance();
-        if(timeStampActivity.isChangeTimeMode()){
+        if (timeStampActivity.isChangeTimeMode()) {
             cal.setTimeInMillis(timeStampActivity.getParkingTimeStore());
         }
         cal.set(Calendar.HOUR_OF_DAY, hourOfDay);
         cal.set(Calendar.MINUTE, minute);
         //create a new calendar at the current time
         Calendar calNow = Calendar.getInstance();
-        if(timeStampActivity.isChangeTimeMode()){
+        if (timeStampActivity.isChangeTimeMode()) {
             calNow.setTimeInMillis(timeStampActivity.getParkingTimeStore());
         }
 
@@ -69,17 +65,17 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
         int elapsedHours = res.get(DateManipulation.ELAPSED_HOURS);
         int elapsedMinutes = res.get(DateManipulation.ELAPSED_MINUTES);
 
-        if( (elapsedMinutes % 5 ) != 0){
+        if ((elapsedMinutes % 5) != 0) {
             this.timeStampActivity.customMinutesNumberPicker(1);
         }
 
-        if(elapsedMinutes < 0 && elapsedHours <= 0){
+        if (elapsedMinutes < 0 && elapsedHours <= 0) {
             elapsedHours -= 1;
         }
 
         //Log.d("elapsed",elapsedHours+":"+elapsedMinutes );
         this.timeStampActivity.getNumberPickerHours().setValue(elapsedHours);
-        this.timeStampActivity.getNumberPickerMinutes().setValue(elapsedMinutes/TimeStampActivity.getMinuteStepSize());
+        this.timeStampActivity.getNumberPickerMinutes().setValue(elapsedMinutes / TimeStampActivity.getMinuteStepSize());
         this.timeStampActivity.updateTimeStampEndValue();
     }
 

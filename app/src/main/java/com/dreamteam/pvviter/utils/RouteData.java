@@ -1,4 +1,4 @@
-package utils;
+package com.dreamteam.pvviter.utils;
 
 import org.osmdroid.bonuspack.routing.RoadManager;
 import org.osmdroid.util.GeoPoint;
@@ -9,7 +9,7 @@ import java.util.ArrayList;
 /**
  * Structure that contains all the information the AsynchronousRouting needs to calculate the road
  */
-public class RouteData{
+public class RouteData {
     public MapView map;
     public ArrayList<GeoPoint> wayPoints;
     public RoadManager roadManager;
