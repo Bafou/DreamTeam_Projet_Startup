@@ -416,6 +416,7 @@ public class MapActivity extends AppCompatActivity {
                                 @Override
                                 public void run() {
                                     updateMapCursors();
+                                    checkPointOfNoReturn();
                                 }
                             });
                         }
