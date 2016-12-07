@@ -2,19 +2,24 @@
     <string name="app_name">PVviter</string>
     <string name="action_settings">Paramètres</string>
     <string name="action_reset">Remettre à zéro</string>
+    <string name="action_change_time">Changer la durée</string>
     <string name="action_reset_title">Êtes-vous certain de vouloir supprimer les données ?</string>
+    <string name="action_reset_title2">Avez-vous retrouvé votre voiture ?</string>
     <string name="action_reset_message">Cette action supprimera votre position, la position de la voiture ainsi que la durée de fin de l\'horodateur</string>
     <string name="action_reset_yes">Oui</string>
     <string name="action_reset_no">Non</string>
     <string name="start_page_text_1">Assurez vous que votre position actuelle corresponde à celle de votre véhicule</string>
-    <string name="start_page_text_2">Cela permettra à l\'aplication de calculer l\'itinéraire vers votre véhicule par la suite</string>
+    <string name="start_page_text_2">Cela permettra à l\'application de calculer l\'itinéraire vers votre véhicule par la suite</string>
     <string name="button_save_position_text">Enregistrer la position</string>
     <string name="title_activity_map">MapActivity</string>
     <string name="gps_not_functionnal">"Impossible de récupérer la position."</string>
+    <string name="gps_error">"Erreur"</string>
     <string name="gps_activation_authorization">"Le GPS est désactivé. Voulez-vous l'activer ?"</string>
+    <string name="gps_cancel">"Annuler"</string>
     <string name="action_getMap">Afficher la carte</string>
     <string name="timeDelimiter">:</string>
-    <string name="time_stamp_end">Heure de fin :</string>
+    <string name="time_stamp_end">Fin :</string>
+    <string name="time_stamp_a">à</string>
     <string name="title_activity_time_stamp">TimeStampActivity</string>
     <string name="validate_button">valider</string>
     <string name="tomorrow_sentence">demain à</string>
@@ -45,6 +50,8 @@
     <item name="slider_walking_speed_default" format="float" type="string">0.35</item>
     <string name="slider_walking_speed_message">Votre vitesse de marche pour atteindre à temps votre voiture</string>
 
+    <string name="pref_walking_speed_toast">Vitesse : </string>
+
     <!--  -->
     <string name="slider_nrp_delay_title">Période avant PNR (Minutes)</string>
     <string-array name="slider_nrp_delay_summaries">
@@ -55,6 +62,47 @@
         <item>60</item>
     </string-array>
     <item name="slider_nrp_delay_default" format="float" type="string">0.45</item>
+
+    <string name="pref_nrp_delay_toast">Délai : </string>
+
+    <!-- -->
+    <string name="slider_reset_title">Paramètres par défaut</string>
+
+    <string name="pref_reset_toast">Paramètres par défaut restaurés</string>
+
+    <string name="pref_reset_title">Avertissement</string>
+    <string name="pref_reset_message">Voulez-vous rétablir vos paramètres par défaut ?</string>
+
     <string name="slider_nrp_delay_message">Période avant la prévention via la notification du point de non retour</string>
+    <string name="action_credit">Crédits</string>
+    <string name="title_credit_activity">CreditsActivity</string>
+    <string name="credit_informations">Informations</string>
+    <string name="credit_project">Ce programme est issu d\'un projet étudiant de Master IAGL de l\'Université Lille 1.</string>
+    <string name="author_antoine"><a href="https://github.com/Bafou">Antoine Petit</a></string>
+    <string name="author_lucas"><a href="https://github.com/LucasDelvallet">Lucas Delvallet</a></string>
+    <string name="author_quentin"><a href="https://github.com/DelvalletQuentin">Quentin Delvallet</a></string>
+    <string name="author_florian"><a href="https://github.com/FlorianDoublet">Florian Doublet</a></string>
+    <string name="author_remi"><a href="https://github.com/remikr">Rémi Kruczek</a></string>
+    <string name="author_geoffrey"><a href="https://github.com/joffre">Geoffrey Escobedo</a></string>
+    <string name="credit_creator">Créateurs</string>
+    <string name="credit_code">Le code source de l\'application est disponible sur Github : </string>
+    <string name="credit_githublink"><a href="https://github.com/Bafou/PVviter">https://github.com/Bafou/PVviter</a></string>
+    <string name="credit_thanks">Nous remercions les projets : Open Street Map, OSMDroid, NumberPicker</string>
+    <string name="credit_icon_roundicons">Icons made by <a href="http://www.flaticon.com/authors/roundicons-freebies" title="Roundicons Freebies">Roundicons Freebies</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" target="_blank" title="Creative Commons BY 3.0">CC 3.0 BY</a></string>
+    <string name="credit_icon_rami">Icons made by <a href="http://www.flaticon.com/authors/rami-mcmin" title="Rami McMin">Rami McMin</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" target="_blank" title="Creative Commons BY 3.0">CC 3.0 BY</a></string>
+    <string name="add_car_time_label">Ajouter une durée à l\'horodateur</string>
+    <string name="activity_map_title">Carte</string>
+    <string name="title_alert_dialog_back_to_timestamp">Retour sur l\'horodateur</string>
+    <string name="message_alert_dialog_back_to_timestamp">Souhaitez vous vraiment retourner sur le choix de l\'horodateur ?</string>
+    <string name="title_alert_dialog_back_to_start_activity">Retour sur la page d\'accueil</string>
+    <string name="message_alert_dialog_back_to_start_activity">Souhaitez vous vraiment retourner sur la page d\'accueil ?
+        Cette action supprimera toutes vos données.</string>
+    <string name="title_alert_dialog_exit_application">Quitter l\'application</string>
+    <string name="message_alert_dialog_exit_application">Souhaitez vous vraiment quitter PVviter et retourner sur l\'accueil android ?
+        Une tâche de fond restera active pour vous notifier sur le trajet en cours. </string>
+    <string name="positive_button_alert_dialog">Oui</string>
+    <string name="negative_button_alert_dialog">Non</string>
+    <string name="title_activity_start_activity">StartActivity</string>
+    <string name="OSM_Credits">© les contributeurs d’<a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a></string>
 
 </resources>

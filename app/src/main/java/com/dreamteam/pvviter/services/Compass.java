@@ -1,4 +1,4 @@
-package services;
+package com.dreamteam.pvviter.services;
 
 import android.content.Context;
 import android.hardware.Sensor;
@@ -22,7 +22,6 @@ public class Compass implements SensorEventListener {
     private float[] mGeomagnetic = new float[3];
 
     /**
-     *
      * @param map The map to update
      */
     public Compass(MapView map) {
@@ -82,7 +81,7 @@ public class Compass implements SensorEventListener {
                 SensorManager.getOrientation(R, orientation);
                 azimuth = (float) Math.toDegrees(orientation[0]);
 
-                map.setMapOrientation(azimuth);
+                map.setMapOrientation(-azimuth);
             }
         }
     }

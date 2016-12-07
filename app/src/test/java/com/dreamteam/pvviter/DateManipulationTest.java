@@ -1,11 +1,16 @@
 package com.dreamteam.pvviter;
 
+import com.dreamteam.pvviter.utils.DateManipulation;
+
 import org.junit.Test;
-import static org.junit.Assert.*;
+
 import java.util.Calendar;
 import java.util.Hashtable;
 
-import utils.DateManipulation;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Created by FlorianDoublet on 30/10/2016.
@@ -13,16 +18,46 @@ import utils.DateManipulation;
 public class DateManipulationTest {
 
     @Test
-    public void isTomorrowTest() throws Exception{
+    public void isTomorrowTest() throws Exception {
         //create a calendar to current date and add 1 day
         Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.DAY_OF_MONTH,1);
+        calendar.add(Calendar.DAY_OF_MONTH, 1);
         //then check
         assertTrue(DateManipulation.isTomorrow(calendar));
+
+        //Now, check if it returns false when not tomorrow
+        calendar = Calendar.getInstance();
+        calendar.add(Calendar.DAY_OF_MONTH, 2);
+        assertFalse(DateManipulation.isTomorrow(calendar));
+
+
+        calendar = Calendar.getInstance();
+        calendar.add(Calendar.DAY_OF_MONTH, -3);
+        //then check
+        assertFalse(DateManipulation.isTomorrow(calendar));
     }
 
     @Test
-    public void dateHourMinuteToString() throws Exception{
+    public void isAfterTomorrowTest() throws Exception {
+        //create a calendar to current date and add 2 days
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DAY_OF_MONTH, 2);
+        assertTrue(DateManipulation.isAfterTomorrow(calendar));
+
+        //Now, check if it returns false when not tomorrow
+        calendar = Calendar.getInstance();
+        calendar.add(Calendar.DAY_OF_MONTH, 1);
+        assertFalse(DateManipulation.isAfterTomorrow(calendar));
+
+        calendar = Calendar.getInstance();
+        calendar.add(Calendar.DAY_OF_MONTH, -3);
+        //then check
+        assertFalse(DateManipulation.isAfterTomorrow(calendar));
+
+    }
+
+    @Test
+    public void dateHourMinuteToStringTest() throws Exception {
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.HOUR_OF_DAY, 14);
         calendar.set(Calendar.MINUTE, 2);
@@ -43,9 +78,8 @@ public class DateManipulationTest {
         assertTrue(DateManipulation.hourToCalendar(hours).get(Calendar.MINUTE) == 48);
     }
 
-
     @Test
-    public void diffBetweenTwoDate() throws Exception{
+    public void diffBetweenTwoDate() throws Exception {
         Calendar oldCal = Calendar.getInstance();
         oldCal.set(Calendar.DAY_OF_MONTH, 2);
         oldCal.set(Calendar.HOUR_OF_DAY, 2);

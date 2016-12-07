@@ -4,7 +4,7 @@
     android:layout_height="match_parent">
     <PreferenceCategory
         android:title="@string/cat_vitesse"
-        android:key="pref_vitesse_category">
+        android:key="@string/cat_vitesse">
 
         <net.jayschwa.android.preference.SliderPreference
             android:key="@string/pref_walking_speed"
@@ -27,11 +27,11 @@
 
     <PreferenceCategory
         android:title="@string/cat_default"
-        android:key="pref_default">
+        android:key="@string/cat_default">
 
         <Preference
-            android:key="@string/pref_raz"
-            android:title="Paramètres par défaut"
+            android:key="@string/pref_reset"
+            android:title="@string/slider_reset_title"
             />
 
 

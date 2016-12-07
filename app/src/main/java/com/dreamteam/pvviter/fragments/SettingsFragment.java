@@ -1,4 +1,4 @@
-package fragments;
+package com.dreamteam.pvviter.fragments;
 
 import android.content.Context;
 import android.content.Intent;
@@ -29,7 +29,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
 
         // Load the preferences from an XML resource
         addPreferencesFromResource(R.xml.preferences);
-        Preference button = findPreference(getString(R.string.pref_raz));
+        Preference button = findPreference(getString(R.string.pref_reset));
         button.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
@@ -64,23 +64,23 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         if(key.equals(getString(R.string.pref_walking_speed))){
             SliderPreference sliderWalkingSpeed = (SliderPreference) findPreference(getString(R.string.pref_walking_speed));
             sliderWalkingSpeed.setTitle(String.format(getString(R.string.slider_walking_speed_title).toString(), getPreferenceManager().getSharedPreferences().getFloat(sliderWalkingSpeed.getKey(),0)*10));
-            Toast toast = Toast.makeText(getActivity().getApplicationContext(), "Vitesse : " + sharedPreferences.getFloat(key, -1), Toast.LENGTH_SHORT);
+            Toast toast = Toast.makeText(getActivity().getApplicationContext(), getString(R.string.pref_walking_speed_toast) + sharedPreferences.getFloat(key, -1), Toast.LENGTH_SHORT);
             toast.show();
         }
-        if(key.equals(getString(R.string.pref_raz))){
-            Toast toast = Toast.makeText(getActivity().getApplicationContext(), "Délai : " + sharedPreferences.getFloat(key, -1), Toast.LENGTH_SHORT);
+        if(key.equals(getString(R.string.pref_reset))){
+            Toast toast = Toast.makeText(getActivity().getApplicationContext(), getString(R.string.pref_nrp_delay_toast) + sharedPreferences.getFloat(key, -1), Toast.LENGTH_SHORT);
             toast.show();
         }
     }
 
     private void confirmDialogRAZ(Context context) {
         final AlertDialog alert = new AlertDialog.Builder(context).create();
-        alert.setTitle("Avertissement");
-        alert.setMessage("Voulez-vous rétablir vos paramètres par défaut ?");
+        alert.setTitle(getString(R.string.pref_reset_title));
+        alert.setMessage(getString(R.string.pref_reset_message));
         alert.setCancelable(false);
         alert.setCanceledOnTouchOutside(false);
 
-        alert.setButton(DialogInterface.BUTTON_POSITIVE, "Oui",
+        alert.setButton(DialogInterface.BUTTON_POSITIVE, getString(R.string.action_reset_yes),
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         cleanSettings();
@@ -89,7 +89,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
                     }
                 });
 
-        alert.setButton(DialogInterface.BUTTON_NEGATIVE, "Non",
+        alert.setButton(DialogInterface.BUTTON_NEGATIVE, getString(R.string.action_reset_no),
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
 
@@ -105,7 +105,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         SharedPreferences.Editor preferencesEditor = PreferenceManager.getDefaultSharedPreferences(getActivity()).edit();
         preferencesEditor.clear();
         preferencesEditor.commit();
-        Toast toast = Toast.makeText(getActivity().getApplicationContext(), "Paramètres par défaut restaurés", Toast.LENGTH_SHORT);
+        Toast toast = Toast.makeText(getActivity().getApplicationContext(), getString(R.string.pref_reset_toast), Toast.LENGTH_SHORT);
         toast.show();
 
         Intent startIntent = new Intent(getActivity(), SettingsActivity.class);

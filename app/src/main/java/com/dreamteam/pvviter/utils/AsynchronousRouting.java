@@ -1,7 +1,6 @@
-package utils;
+package com.dreamteam.pvviter.utils;
 
 import android.os.AsyncTask;
-import android.util.Log;
 
 import org.osmdroid.bonuspack.routing.Road;
 import org.osmdroid.bonuspack.routing.RoadManager;

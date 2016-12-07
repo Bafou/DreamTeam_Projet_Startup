@@ -1,13 +1,11 @@
 package com.dreamteam.pvviter;
 
+import com.dreamteam.pvviter.utils.StringConversion;
+
 import junit.framework.Assert;
 
 import org.junit.Test;
 import org.osmdroid.util.GeoPoint;
-
-
-import dalvik.annotation.TestTargetClass;
-import utils.StringConversion;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -27,13 +25,13 @@ public class StringConversionTest {
     }
 
     @Test
-    public void geoPointToStringTest(){
+    public void geoPointToStringTest() {
         GeoPoint geoPoint = new GeoPoint(9.3, 3.11);
         assertEquals("9.3;3.11", StringConversion.geoPointToString(geoPoint));
     }
 
     @Test
-    public void stringToGeoPoint_WithCorrectStringTest(){
+    public void stringToGeoPoint_WithCorrectStringTest() {
         final double DELTA = 1e-15;
 
         GeoPoint geoPoint = StringConversion.stringToGeoPoint("9.3;3.11");
@@ -42,27 +40,21 @@ public class StringConversionTest {
     }
 
     @Test
-         public void stringToGeoPoint_WithIncorrectStringSizeTest(){
-        try
-        {
+    public void stringToGeoPoint_WithIncorrectStringSizeTest() {
+        try {
             GeoPoint geoPoint = StringConversion.stringToGeoPoint("9.3");
             Assert.fail("Should have thrown ArrayIndexOutOfBoundsException");
-        }
-        catch(ArrayIndexOutOfBoundsException e)
-        {
+        } catch (ArrayIndexOutOfBoundsException e) {
             //success
         }
     }
 
     @Test
-    public void stringToGeoPoint_WithIncorrectStringFormatTest(){
-        try
-        {
+    public void stringToGeoPoint_WithIncorrectStringFormatTest() {
+        try {
             GeoPoint geoPoint = StringConversion.stringToGeoPoint("Truite;Lampadaire");
             Assert.fail("Should have thrown NumberFormatException");
-        }
-        catch(NumberFormatException e)
-        {
+        } catch (NumberFormatException e) {
             //success
         }
     }
