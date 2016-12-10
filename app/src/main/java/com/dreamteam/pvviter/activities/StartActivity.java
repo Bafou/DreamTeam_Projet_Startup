@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Toast;
 
 import com.dreamteam.pvviter.R;
 import com.dreamteam.pvviter.services.FileIO;
@@ -16,6 +17,9 @@ import com.dreamteam.pvviter.utils.Data_Storage;
 import org.osmdroid.util.GeoPoint;
 
 public class StartActivity extends Activity {
+    private boolean stopThread = false;
+    public boolean displayToast = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,7 +30,6 @@ public class StartActivity extends Activity {
             Intent intent = new Intent(this, MapActivity.class);
             startActivity(intent);
         }
-
     }
 
     /**
@@ -36,9 +39,10 @@ public class StartActivity extends Activity {
      */
     public void saveLocation(View view) {
 
-        Locator locator = new Locator(this) {
+        final Locator locator = new Locator(this) {
             @Override
             public void onLocationChanged(Location location) {
+                stopThread = true;
                 updateGPSCoordinates();
 
                 Data_Storage.set_car_location(StartActivity.this, new GeoPoint(location.getLatitude(), location.getLongitude()));
@@ -51,6 +55,33 @@ public class StartActivity extends Activity {
         };
 
 
+
+       Thread thread = new Thread() {
+            @Override
+            public void run() {
+                try {
+                Thread.sleep(30000);
+                    if(!stopThread) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                locator.stopUsingGPS();
+                                findViewById(R.id.buttonSavePosition).setVisibility(View.VISIBLE);
+                                findViewById(R.id.loading).setVisibility(View.GONE);
+                                findViewById(R.id.gps_error).setVisibility(View.VISIBLE);
+                                displayToast = true;
+                            }
+                        });
+                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+       };
+
+        thread.start();
+
+        findViewById(R.id.gps_error).setVisibility(View.INVISIBLE);
         findViewById(R.id.buttonSavePosition).setVisibility(View.INVISIBLE);
         findViewById(R.id.loading).setVisibility(View.VISIBLE);
 
