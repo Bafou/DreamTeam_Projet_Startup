@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -117,7 +118,14 @@ public class MapActivity extends AppCompatActivity {
      */
     private void addInfoOnMap(String timeLeft, String distance, String time) {
         TextView time_car = (TextView) findViewById(R.id.time_car);
-        time_car.setText(timeLeft);
+
+        if(timeLeft.contains("-")) {
+            time_car.setTextColor(Color.RED);
+            time_car.setText("Temps expiré");
+        } else {
+            time_car.setTextColor(Color.WHITE);
+            time_car.setText(timeLeft);
+        }
 
         TextView distance_route = (TextView) findViewById(R.id.distance_route);
         distance_route.setText(distance);
@@ -187,6 +195,7 @@ public class MapActivity extends AppCompatActivity {
 
         String routeTime = DateManipulation.hourToStringHour(time);
         routeTime = routeTime.replace(':', 'h');
+
         if (time > 24)
             routeTime = (int) (time / 24) + "j" + routeTime;
         if (dateDiff.get(DateManipulation.ELAPSED_DAYS) > 0)  //Adds the days left when it's a very long walk
