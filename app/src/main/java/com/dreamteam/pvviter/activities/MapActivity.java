@@ -171,11 +171,12 @@ public class MapActivity extends AppCompatActivity {
         //MapFunctions.drawRoute(map, startPoint, endPoint);
         Road road = MapFunctions.getRoad(map, userLocation, carLocation);
         Double distance = road.mLength;
-        if (distance <= Settings.CAR_FOUND_DISTANCE) {
-            this.showFAB(true);
-        } else {
-            this.showFAB(false);
+        if (distance == 0.0){ //problem of network
+            distance=getCarDistance()*0.001;
         }
+        this.showFAB((distance <= Settings.CAR_FOUND_DISTANCE ));
+
+
         Double time = MathCalcul.getTime(distance, Settings.SPEED);
         MapFunctions.drawRoute(map, road);
 
@@ -475,6 +476,14 @@ public class MapActivity extends AppCompatActivity {
                 iterator.remove();
             }
         }
+    }
+
+    /**
+     * return the distance between the user and the car
+     * @return the distance in meter
+     */
+    private int getCarDistance(){
+       return userLocation.distanceTo(carLocation);
     }
 
     /**
