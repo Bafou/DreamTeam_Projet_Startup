@@ -20,3 +20,12 @@ deploy:
     
 notifications:
   slack: pvviter:FfofyWM6YJq0LkHC39aespW4
+  
+addons:
+  sonarqube:
+    token:
+      secure: rkXul+ZZh0FRU3K87FBs89eUC1dPyIFvN/NrOXCfGgjbmPLy1SSZ+LFFZlf4x5klzR/4qliu+tqftoAZi51dmvBr9g6RDNNDhJK/KiGMVtI6DA3S8nBKvEd9bek2fngAtFjMqXEyzJ4k0u5UwfqG+KQHr2vJEmCO8EVtk185plxyOl5kZ+8OXXo7J0epCqfFAvulY4FHlW2VQJoh2u+vuNsiYCa39618H7AqKPFbS/1a2JvpWwpJ737Lsk6IjPmsnvmNjdinpJHZ0302qhWzSss7yx3vJ4yWIr9Loj04UjEwaVbZyxYIOxaZun8JEHtjZ90nqQAAlDht6+qFPzunLWhHZIRweMNwO2zgslI43bmrA2AxwPJeb+cnE5kU/nPRXkZwcOs/0jmKvSarCgcdiOYjSkkuf47F0XNa7FPhuMbxM01l/Qb4WjHtKdUDXKdpEpCJdI5VOOkX4JKcA9R/FstNrrj1toGv51VjtDc23vRVyw5cjp4mNojRRkgmZB2jC9rJ44iQZ91r+QSkZMdQHb9JWeKPO5SYzKcjh9BwSai9B8hM6t499oGQZmWmV5uSNRtpT8zqkamQ5twnjxugOAnS/5/TwQZaga30owJmruK470njvxKlsQdLiaZRrqBBPZCpeUTDWo10nzQMABdPzxxi38/hQycIJUtECiveVY8=
+    github_token:
+      secure: c85a59a23e7ff1ac23c18a7a4027294ff9ea310d
+script:
+  - sonar-scanner
