@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <PreferenceCategory
+        android:title="@string/cat_vitesse"
+        android:key="@string/cat_vitesse">
+
+        <net.jayschwa.android.preference.SliderPreference
+            android:key="@string/pref_walking_speed"
+            android:title="@string/slider_walking_speed_title"
+            android:summary="@array/slider_walking_speed_summaries"
+            android:defaultValue="@string/slider_walking_speed_default"
+            android:dialogMessage="@string/slider_walking_speed_message" />
+
+        <net.jayschwa.android.preference.SliderPreference
+            android:key="@string/pref_nrp_delay"
+            android:title="@string/slider_nrp_delay_title"
+            android:summary="@array/slider_nrp_delay_summaries"
+            android:defaultValue="@string/slider_nrp_delay_default"
+            android:dialogMessage="@string/slider_nrp_delay_message" />
+
+
+
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="@string/cat_default"
+        android:key="@string/cat_default">
+
+        <Preference
+            android:key="@string/pref_reset"
+            android:title="@string/slider_reset_title"
+            />
+
+
+    </PreferenceCategory>
+
+
+
+</PreferenceScreen>
