@@ -90,7 +90,9 @@ public class MapFunctions {
         userMarker.setPosition(point);
         userMarker.setRotation(angle);
         userMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_CENTER);
-        userMarker.setIcon(ContextCompat.getDrawable(map.getContext(), R.drawable.user));
+
+        userMarker.setIcon(ContextCompat.getDrawable(map.getContext(), R.drawable.user_marker));
+
         userMarker.setOnMarkerClickListener(new Marker.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker, MapView mapView) {
