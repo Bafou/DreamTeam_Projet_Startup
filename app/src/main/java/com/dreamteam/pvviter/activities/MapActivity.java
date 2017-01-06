@@ -21,6 +21,7 @@ import com.dreamteam.pvviter.R;
 import com.dreamteam.pvviter.services.Compass;
 import com.dreamteam.pvviter.services.FileIO;
 import com.dreamteam.pvviter.services.Locator;
+import com.dreamteam.pvviter.services.PermanentNotification;
 import com.dreamteam.pvviter.services.PointOfNoReturnNotification;
 import com.dreamteam.pvviter.utils.Data_Storage;
 import com.dreamteam.pvviter.utils.DateManipulation;
@@ -165,6 +166,8 @@ public class MapActivity extends AppCompatActivity {
 
         this.map = map;
         updateMapCursors();
+
+        PermanentNotification permanentNotification = new PermanentNotification(this);
     }
 
     /**
