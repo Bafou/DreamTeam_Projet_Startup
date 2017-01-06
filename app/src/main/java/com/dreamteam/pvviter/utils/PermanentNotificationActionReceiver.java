@@ -19,9 +19,8 @@ public class PermanentNotificationActionReceiver extends BroadcastReceiver {
         String action = intent.getAction();
 
         if(PermanentNotification.CLOSE_ACTION.equals(action)) {
-            NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-            //close the notification
-            mNotificationManager.cancel(PermanentNotification.mNotificationId);
+            PermanentNotification.removeNotification(context);
         }
     }
+
 }

@@ -104,4 +104,30 @@ public class DateManipulationTest {
         assertArrayEquals(expectedValues, obtainedValue);
 
     }
+    @Test
+    public void diffBetweenTwoDateFirstDateIsNewer() throws Exception {
+        Calendar oldCal = Calendar.getInstance();
+        oldCal.set(Calendar.DAY_OF_MONTH, 5);
+        oldCal.set(Calendar.HOUR_OF_DAY, 6);
+        oldCal.set(Calendar.MINUTE, 7);
+
+        //set a call with the new parameters for hours and minutes
+        Calendar newCal = Calendar.getInstance();
+        newCal.set(Calendar.DAY_OF_MONTH, 5);
+        newCal.set(Calendar.HOUR_OF_DAY, 2);
+        newCal.set(Calendar.MINUTE, 2);
+
+        //calculus the difference and set the result into the variable above
+        Hashtable<Integer, Integer> res = DateManipulation.diffBetweenTwoDate(newCal, oldCal);
+
+        int elapsedDays = res.get(DateManipulation.ELAPSED_DAYS);
+        int elapsedHours = res.get(DateManipulation.ELAPSED_HOURS);
+        int elapsedMinutes = res.get(DateManipulation.ELAPSED_MINUTES);
+
+        int[] expectedValues = {0, -4, -5};
+        int[] obtainedValue = {elapsedDays, elapsedHours, elapsedMinutes};
+
+        assertArrayEquals(expectedValues, obtainedValue);
+
+    }
 }

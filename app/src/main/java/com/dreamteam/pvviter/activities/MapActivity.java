@@ -20,6 +20,7 @@ import com.dreamteam.pvviter.BuildConfig;
 import com.dreamteam.pvviter.R;
 import com.dreamteam.pvviter.services.Compass;
 import com.dreamteam.pvviter.services.FileIO;
+import com.dreamteam.pvviter.services.KillNotificationsService;
 import com.dreamteam.pvviter.services.Locator;
 import com.dreamteam.pvviter.services.PermanentNotification;
 import com.dreamteam.pvviter.services.PointOfNoReturnNotification;
@@ -69,11 +70,15 @@ public class MapActivity extends AppCompatActivity {
         overridePendingTransition(R.anim.fadein, R.anim.fadeout);
         setContentView(R.layout.activity_map);
 
+
+
+
         setTitle(R.string.activity_map_title);
 
         Intent intent = getIntent();
         previousActivityName = intent.getStringExtra("activity");
-
+        //if we open the activity
+        PermanentNotification.wasClosed = false;
 
         initMap();
         setupCompass();
@@ -94,6 +99,21 @@ public class MapActivity extends AppCompatActivity {
                 return false;
             }
         });
+
+        Intent in = new Intent(this, KillNotificationsService.class);
+        startService(in);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        //if we open the activity
+        PermanentNotification.wasClosed = false;
+    }
+
+    public void onDestroy() {
+        PermanentNotification.removeNotification(this);
+        super.onDestroy();
     }
 
     /**
@@ -133,6 +153,9 @@ public class MapActivity extends AppCompatActivity {
 
         TextView time_route = (TextView) findViewById(R.id.time_route);
         time_route.setText(time);
+
+        //create or update the permanent notification
+        new PermanentNotification(this, timeLeft, distance, " nothing");
     }
 
     /**
@@ -167,7 +190,6 @@ public class MapActivity extends AppCompatActivity {
         this.map = map;
         updateMapCursors();
 
-        PermanentNotification permanentNotification = new PermanentNotification(this);
     }
 
     /**
@@ -203,6 +225,8 @@ public class MapActivity extends AppCompatActivity {
             routeTime = (int) (time / 24) + "j" + routeTime;
         if (dateDiff.get(DateManipulation.ELAPSED_DAYS) > 0)  //Adds the days left when it's a very long walk
             timeLeft = dateDiff.get(DateManipulation.ELAPSED_DAYS) + "j" + timeLeft;
+
+        //timeleft - routetime = pointOfNoReturn
 
         this.addInfoOnMap(timeLeft, StringConversion.lengthToString(distance), routeTime);
     }
@@ -305,6 +329,7 @@ public class MapActivity extends AppCompatActivity {
             }
         }
     }
+
 
     @Override
     public void onBackPressed() {

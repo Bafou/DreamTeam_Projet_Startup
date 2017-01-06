@@ -45,6 +45,7 @@
                 <action android:name="close_action"/>
             </intent-filter>
         </receiver>
+        <service android:name=".services.KillNotificationsService" />
     </application>
 
 </manifest>
