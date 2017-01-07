@@ -112,6 +112,11 @@ public class DateManipulation {
      */
     public static Hashtable<Integer, Integer> diffBetweenTwoDate(Calendar cal1, Calendar cal2) {
 
+        cal1.set(Calendar.SECOND, 0);
+        cal1.set(Calendar.MILLISECOND, 0);
+        cal2.set(Calendar.SECOND, 0);
+        cal2.set(Calendar.MILLISECOND, 0);
+
         Hashtable<Integer, Integer> hashTable = new Hashtable<>();
         Date cal1Date = cal1.getTime();
         Date cal2Date = cal2.getTime();
