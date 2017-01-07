@@ -198,7 +198,7 @@ public class MapActivity extends AppCompatActivity {
      */
     private void updateMapCursors() {
         MapFunctions.clearMap(map);
-        MapFunctions.addCurrentPositionPoint(map, userLocation);
+        MapFunctions.addCurrentPositionPoint(map, userLocation, -Compass.azimuth);
         MapFunctions.addCarPoint(map, carLocation);
 
         //MapFunctions.drawRoute(map, startPoint, endPoint);
