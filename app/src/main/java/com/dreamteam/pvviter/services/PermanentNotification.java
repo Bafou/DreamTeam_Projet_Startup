@@ -39,7 +39,7 @@ public class PermanentNotification {
 
         timeBeforeNoReturn.replace(":", "h");
 
-        int icon = R.drawable.notificon;
+        int icon = R.drawable.pvviter;
         long when = System.currentTimeMillis();
 
         NotificationManager mNotificationManager = (NotificationManager)context.getSystemService(NOTIFICATION_SERVICE);

@@ -16,7 +16,7 @@
         android:scaleType="fitCenter"
         android:layout_marginLeft="7dp"
         android:layout_marginRight="7dp"
-        android:src="@drawable/notificon"
+        android:src="@drawable/pvviter"
         />
 
 
