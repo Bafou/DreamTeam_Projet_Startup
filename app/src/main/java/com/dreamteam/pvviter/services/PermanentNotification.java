@@ -37,6 +37,8 @@ public class PermanentNotification {
             return;
         }
 
+        timeBeforeNoReturn.replace(":", "h");
+
         int icon = R.drawable.notificon;
         long when = System.currentTimeMillis();
 
@@ -45,7 +47,7 @@ public class PermanentNotification {
         RemoteViews contentView = new RemoteViews(context.getPackageName(), R.layout.permanent_notification);
         contentView.setTextViewText(R.id.resting_time, context.getString(R.string.time_car_label) + " : " + timeLeft);
         contentView.setTextViewText(R.id.distance, context.getString(R.string.distance_route_label) + " : " + distance);
-        contentView.setTextViewText(R.id.point_of_no_return, context.getString(R.string.point_of_no_return_notif) + timeBeforeNoReturn);
+        contentView.setTextViewText(R.id.point_of_no_return, context.getString(R.string.point_of_no_return_notif) + " " + timeBeforeNoReturn);
 
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(context)
                 .setSmallIcon(icon)

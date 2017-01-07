@@ -155,7 +155,7 @@ public class MapActivity extends AppCompatActivity {
         time_route.setText(time);
 
         //create or update the permanent notification
-        new PermanentNotification(this, timeLeft, distance, " nothing");
+        new PermanentNotification(this, timeLeft, distance, getMinuteBeforePointOfNoReturn());
     }
 
     /**
@@ -236,19 +236,30 @@ public class MapActivity extends AppCompatActivity {
      * if yes, raise a notification
      */
     private void checkPointOfNoReturn() {
+
+        Calendar calendarEndTime = getEndTimeCal();
+        Calendar calArrivingTimeAccordingToDistance = getArrivingTimeCalAccordingToDistance();
+
+        //if it's <= 0 it mean than calArrivingTime is higher or equals to the calendarEnd
+        if (calendarEndTime.getTime().compareTo(calArrivingTimeAccordingToDistance.getTime()) == 0) {
+            new PointOfNoReturnNotification(getApplicationContext());
+        }
+    }
+
+    private String getMinuteBeforePointOfNoReturn(){
+        Calendar calendarEndTime = getEndTimeCal();
+        Calendar calArrivingTimeAccordingToDistance = getArrivingTimeCalAccordingToDistance();
+        String minutesBeforePointOfNoReturn = DateManipulation.diffBetweenTwoDateTimeInString(calendarEndTime,
+                calArrivingTimeAccordingToDistance);
+
+        return minutesBeforePointOfNoReturn;
+    }
+
+    private Calendar getArrivingTimeCalAccordingToDistance(){
         Road road = MapFunctions.getRoad(map, userLocation, carLocation);
         Double distance = road.mLength;
         Double time = MathCalcul.getTime(distance, Settings.SPEED);
         Calendar calendarDistanceTime = DateManipulation.hourToCalendar(time);
-
-
-        long ms = Data_Storage.get_parking_end_time_in_milliseconds(getApplicationContext());
-        Calendar calendarEnd = Calendar.getInstance();
-        calendarEnd.setTimeInMillis(ms);
-        //we set the millisecond and second to 0 for the next comparing of date
-        calendarEnd.set(Calendar.MILLISECOND, 0);
-        calendarEnd.set(Calendar.SECOND, 0);
-
 
         int distanceTimeMin = calendarDistanceTime.get(Calendar.MINUTE);
         int distanceTimeHour = calendarDistanceTime.get(Calendar.HOUR_OF_DAY);
@@ -260,11 +271,18 @@ public class MapActivity extends AppCompatActivity {
         calArrivingTime.add(Calendar.HOUR_OF_DAY, distanceTimeHour);
         calArrivingTime.add(Calendar.MINUTE, distanceTimeMin);
 
-        //if it's <= 0 it mean than calArrivingTime is higher or equals to the calendarEnd
-        if (calendarEnd.getTime().compareTo(calArrivingTime.getTime()) == 0) {
-            new PointOfNoReturnNotification(getApplicationContext());
-        }
+        return calArrivingTime;
 
+    }
+
+    private Calendar getEndTimeCal(){
+        long ms = Data_Storage.get_parking_end_time_in_milliseconds(getApplicationContext());
+        Calendar calendarEnd = Calendar.getInstance();
+        calendarEnd.setTimeInMillis(ms);
+        //we set the millisecond and second to 0 for the next comparing of date
+        calendarEnd.set(Calendar.MILLISECOND, 0);
+        calendarEnd.set(Calendar.SECOND, 0);
+        return calendarEnd;
     }
 
     /**

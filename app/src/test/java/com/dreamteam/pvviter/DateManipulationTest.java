@@ -130,4 +130,51 @@ public class DateManipulationTest {
         assertArrayEquals(expectedValues, obtainedValue);
 
     }
+
+    @Test
+    public void diffBetweenTwoDateTimeInStringInStringTest() throws Exception {
+        Calendar oldCal = Calendar.getInstance();
+        oldCal.set(Calendar.HOUR_OF_DAY, 2);
+        oldCal.set(Calendar.MINUTE, 2);
+
+        //set a call with the new parameters for hours and minutes
+        Calendar newCal = Calendar.getInstance();
+        newCal.set(Calendar.HOUR_OF_DAY, 6);
+        newCal.set(Calendar.MINUTE, 7);
+
+        //calculus the difference and set the result into the variable above
+        String res = DateManipulation.diffBetweenTwoDateTimeInString(newCal, oldCal);
+        assertEquals("04:05", res);
+    }
+
+    @Test
+    public void diffBetweenTwoDateTimeInStringInStringLessMinuteTest() throws Exception {
+        Calendar oldCal = Calendar.getInstance();
+        oldCal.set(Calendar.HOUR_OF_DAY, 2);
+        oldCal.set(Calendar.MINUTE, 2);
+
+        //set a call with the new parameters for hours and minutes
+        Calendar newCal = Calendar.getInstance();
+        newCal.set(Calendar.HOUR_OF_DAY, 6);
+        newCal.set(Calendar.MINUTE, 1);
+
+        //calculus the difference and set the result into the variable above
+        String res = DateManipulation.diffBetweenTwoDateTimeInString(newCal, oldCal);
+        assertEquals("03:59", res);
+    }
+
+    @Test
+    public void diffBetweenTwoDateTimeInStringFirstDateIsNewerTest() throws Exception {
+        Calendar oldCal = Calendar.getInstance();
+        oldCal.set(Calendar.HOUR_OF_DAY, 6);
+        oldCal.set(Calendar.MINUTE, 7);
+
+        //set a call with the new parameters for hours and minutes
+        Calendar newCal = Calendar.getInstance();
+        newCal.set(Calendar.HOUR_OF_DAY, 2);
+        newCal.set(Calendar.MINUTE, 2);
+        //calculus the difference and set the result into the variable above
+        String res = DateManipulation.diffBetweenTwoDateTimeInString(newCal, oldCal);
+        assertEquals("-04:05", res);
+    }
 }
