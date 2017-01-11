@@ -5,6 +5,9 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.util.Log;
+
+import com.dreamteam.pvviter.utils.MapFunctions;
 
 import org.osmdroid.views.MapView;
 
@@ -17,7 +20,7 @@ public class Compass implements SensorEventListener {
     private SensorManager sensorManager;
     private Sensor gsensor;
     private Sensor msensor;
-    private float azimuth = 0f;
+    public static float azimuth = 0f;
     private float[] mGravity = new float[3];
     private float[] mGeomagnetic = new float[3];
 
@@ -80,8 +83,7 @@ public class Compass implements SensorEventListener {
                 float orientation[] = new float[3];
                 SensorManager.getOrientation(R, orientation);
                 azimuth = (float) Math.toDegrees(orientation[0]);
-
-                map.setMapOrientation(-azimuth);
+                MapFunctions.changeUserRotation(map, azimuth);
             }
         }
     }
