@@ -249,6 +249,15 @@ public class MapActivity extends AppCompatActivity {
         calendarEnd.set(Calendar.MILLISECOND, 0);
         calendarEnd.set(Calendar.SECOND, 0);
 
+        // Here will be the option for raising the point of no return before X minutes
+        int beAwareBeforeXMinutes = 5;
+
+        calendarEnd.add(Calendar.MINUTE, -beAwareBeforeXMinutes);
+        String minutesString = Integer.toString(beAwareBeforeXMinutes);
+        if(beAwareBeforeXMinutes != 0){
+            minutesString += " minutes";
+        }
+
 
         int distanceTimeMin = calendarDistanceTime.get(Calendar.MINUTE);
         int distanceTimeHour = calendarDistanceTime.get(Calendar.HOUR_OF_DAY);
@@ -262,7 +271,7 @@ public class MapActivity extends AppCompatActivity {
 
         //if it's <= 0 it mean than calArrivingTime is higher or equals to the calendarEnd
         if (calendarEnd.getTime().compareTo(calArrivingTime.getTime()) == 0) {
-            new PointOfNoReturnNotification(getApplicationContext());
+            new PointOfNoReturnNotification(getApplicationContext(), minutesString);
         }
 
     }
