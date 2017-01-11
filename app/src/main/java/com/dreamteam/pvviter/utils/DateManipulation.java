@@ -112,6 +112,11 @@ public class DateManipulation {
      */
     public static Hashtable<Integer, Integer> diffBetweenTwoDate(Calendar cal1, Calendar cal2) {
 
+        cal1.set(Calendar.SECOND, 0);
+        cal1.set(Calendar.MILLISECOND, 0);
+        cal2.set(Calendar.SECOND, 0);
+        cal2.set(Calendar.MILLISECOND, 0);
+
         Hashtable<Integer, Integer> hashTable = new Hashtable<>();
         Date cal1Date = cal1.getTime();
         Date cal2Date = cal2.getTime();
@@ -138,5 +143,36 @@ public class DateManipulation {
         hashTable.put(ELAPSED_MINUTES, elapsedMinutes);
 
         return hashTable;
+    }
+
+    public static String diffBetweenTwoDateTimeInString(Calendar cal1, Calendar cal2) {
+        Boolean isNegativ = false;
+        String timeDiff = "";
+        Hashtable<Integer, Integer> res;
+        if(cal1.before(cal2)){
+            isNegativ = true;
+            timeDiff += "-";
+            res = DateManipulation.diffBetweenTwoDate(cal2, cal1);
+        } else {
+            res = DateManipulation.diffBetweenTwoDate(cal1, cal2);
+        }
+
+        int elapsedHours = res.get(DateManipulation.ELAPSED_HOURS);
+        int elapsedMinutes = res.get(DateManipulation.ELAPSED_MINUTES);
+
+        if (elapsedMinutes < 0 && elapsedHours <= 0) {
+            elapsedHours -= 1;
+        }
+
+        Calendar calArrivingTime = Calendar.getInstance();
+        //we set the millisecond and second to 0 for the next comparing of date
+        calArrivingTime.set(Calendar.MILLISECOND, 0);
+        calArrivingTime.set(Calendar.SECOND, 0);
+        calArrivingTime.set(Calendar.HOUR_OF_DAY, elapsedHours);
+        calArrivingTime.set(Calendar.MINUTE, elapsedMinutes);
+
+        timeDiff += dateHourMinuteToString(calArrivingTime.getTime());
+
+        return timeDiff;
     }
 }

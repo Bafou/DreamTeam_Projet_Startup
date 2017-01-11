@@ -5,6 +5,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.provider.ContactsContract;
 import android.support.v4.app.NotificationCompat;
 import android.widget.ImageView;
@@ -37,15 +38,43 @@ public class PermanentNotification {
             return;
         }
 
-        int icon = R.drawable.notificon;
+
+        timeBeforeNoReturn = timeBeforeNoReturn.replace(':','h');
+
+
+
+        int icon = R.drawable.pvviter;
         long when = System.currentTimeMillis();
 
         NotificationManager mNotificationManager = (NotificationManager)context.getSystemService(NOTIFICATION_SERVICE);
 
         RemoteViews contentView = new RemoteViews(context.getPackageName(), R.layout.permanent_notification);
-        contentView.setTextViewText(R.id.resting_time, context.getString(R.string.time_car_label) + " : " + timeLeft);
-        contentView.setTextViewText(R.id.distance, context.getString(R.string.distance_route_label) + " : " + distance);
-        contentView.setTextViewText(R.id.point_of_no_return, context.getString(R.string.point_of_no_return_notif) + timeBeforeNoReturn);
+
+
+        contentView.setTextViewText(R.id.resting_time_mess, context.getString(R.string.time_car_label) + " : ");
+        contentView.setTextViewText(R.id.point_of_no_return_mess, context.getString(R.string.point_of_no_return_notif) + " : ");
+        contentView.setTextViewText(R.id.distance_mess, context.getString(R.string.distance_route_label) + " : ");
+        contentView.setTextViewText(R.id.distance, distance);
+        contentView.setTextColor(R.id.distance, Color.WHITE);
+
+        if(timeLeft.contains("-")) {
+            contentView.setTextColor(R.id.resting_time, Color.RED);
+            contentView.setTextViewText(R.id.resting_time, "Temps expiré");
+        } else {
+            contentView.setTextColor(R.id.resting_time, Color.WHITE);
+            contentView.setTextViewText(R.id.resting_time, timeLeft);
+        }
+
+        if(timeLeft.contains("-")) {
+            contentView.setTextColor(R.id.point_of_no_return, Color.RED);
+            contentView.setTextViewText(R.id.point_of_no_return, "Temps expiré");
+        } else {
+            contentView.setTextColor(R.id.point_of_no_return, Color.WHITE);
+            contentView.setTextViewText(R.id.point_of_no_return, timeBeforeNoReturn);
+        }
+
+
+
 
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(context)
                 .setSmallIcon(icon)

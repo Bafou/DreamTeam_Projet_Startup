@@ -39,6 +39,7 @@ public class KillNotificationsService extends Service {
         //kill all the notifications when we kill the app
         NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         mNotificationManager.cancelAll();
+        super.onTaskRemoved(rootIntent);
     }
 
 }
