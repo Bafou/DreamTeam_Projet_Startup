@@ -259,11 +259,11 @@ public class MapFunctions {
     }
 
     public static void changeUserRotation(MapView map, float angle) {
+        List<Overlay> list = map.getOverlays();
+        list.remove(userMarker);  //Put the marker in front of the road path
+
         userMarker.setRotation(angle);
 
-        //Put the marker in front of the road path
-        List<Overlay> list = map.getOverlays();
-        list.remove(userMarker);
         list.add(userMarker);
 
         refreshMap(map);

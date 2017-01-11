@@ -5,6 +5,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.util.Log;
 
 import com.dreamteam.pvviter.utils.MapFunctions;
 
@@ -82,7 +83,7 @@ public class Compass implements SensorEventListener {
                 float orientation[] = new float[3];
                 SensorManager.getOrientation(R, orientation);
                 azimuth = (float) Math.toDegrees(orientation[0]);
-                MapFunctions.changeUserRotation(map, -azimuth);
+                MapFunctions.changeUserRotation(map, azimuth);
             }
         }
     }
