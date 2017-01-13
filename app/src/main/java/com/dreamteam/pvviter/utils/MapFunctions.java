@@ -14,13 +14,16 @@ import org.osmdroid.views.overlay.Marker;
 import org.osmdroid.views.overlay.Overlay;
 import org.osmdroid.views.overlay.Polyline;
 
+import java.util.AbstractList;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Functions to manipulate a given map's components, like adding points and tracing routes.
  */
 public class MapFunctions {
 
+    public static Marker userMarker;
     public final static int ROUTE_COLOR = Color.CYAN;
 
     /**
@@ -45,8 +48,15 @@ public class MapFunctions {
     public static Marker addCarPoint(MapView map, GeoPoint point) {
         Marker marker = new Marker(map);
         marker.setPosition(point);
-        marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
+        marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_CENTER);
         marker.setIcon(ContextCompat.getDrawable(map.getContext(), R.drawable.car_marker));
+
+        marker.setOnMarkerClickListener(new Marker.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker, MapView mapView) {
+                return false;
+            }
+        });
 
         map.getOverlays().add(marker);
 
@@ -63,8 +73,8 @@ public class MapFunctions {
      * @param longitude The longitude of the point to draw
      * @return The marker that has been pinned to the map
      */
-    public static Marker addCurrentPositionPoint(MapView map, double latitude, double longitude) {
-        return addCurrentPositionPoint(map, new GeoPoint(latitude, longitude));
+    public static Marker addCurrentPositionPoint(MapView map, double latitude, double longitude, float angle) {
+        return addCurrentPositionPoint(map, new GeoPoint(latitude, longitude), angle);
     }
 
     /**
@@ -74,17 +84,27 @@ public class MapFunctions {
      * @param point The location of the point to draw
      * @return The marker that has been pinned to the map
      */
-    public static Marker addCurrentPositionPoint(MapView map, GeoPoint point) {
-        Marker marker = new Marker(map);
-        marker.setPosition(point);
-        marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
-        marker.setIcon(ContextCompat.getDrawable(map.getContext(), R.drawable.man_marker));
+    public static Marker addCurrentPositionPoint(MapView map, GeoPoint point, float angle) {
+        userMarker = new Marker(map);
 
-        map.getOverlays().add(marker);
+        userMarker.setPosition(point);
+        userMarker.setRotation(angle);
+        userMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_CENTER);
+
+        userMarker.setIcon(ContextCompat.getDrawable(map.getContext(), R.drawable.user_marker));
+
+        userMarker.setOnMarkerClickListener(new Marker.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker, MapView mapView) {
+                return false;
+            }
+        });
+
+        map.getOverlays().add(userMarker);
 
         refreshMap(map);
 
-        return marker;
+        return userMarker;
     }
 
     /**
@@ -234,6 +254,17 @@ public class MapFunctions {
         for (Overlay o : map.getOverlays()) {
             if (o instanceof Marker) map.getOverlays().remove(o);
         }
+
+        refreshMap(map);
+    }
+
+    public static void changeUserRotation(MapView map, float angle) {
+        List<Overlay> list = map.getOverlays();
+        list.remove(userMarker);  //Put the marker in front of the road path
+
+        userMarker.setRotation(angle);
+
+        list.add(userMarker);
 
         refreshMap(map);
     }

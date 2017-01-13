@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -19,7 +20,9 @@ import com.dreamteam.pvviter.BuildConfig;
 import com.dreamteam.pvviter.R;
 import com.dreamteam.pvviter.services.Compass;
 import com.dreamteam.pvviter.services.FileIO;
+import com.dreamteam.pvviter.services.KillNotificationsService;
 import com.dreamteam.pvviter.services.Locator;
+import com.dreamteam.pvviter.services.PermanentNotification;
 import com.dreamteam.pvviter.services.PointOfNoReturnNotification;
 import com.dreamteam.pvviter.utils.Data_Storage;
 import com.dreamteam.pvviter.utils.DateManipulation;
@@ -67,11 +70,15 @@ public class MapActivity extends AppCompatActivity {
         overridePendingTransition(R.anim.fadein, R.anim.fadeout);
         setContentView(R.layout.activity_map);
 
+
+
+
         setTitle(R.string.activity_map_title);
 
         Intent intent = getIntent();
         previousActivityName = intent.getStringExtra("activity");
-
+        //if we open the activity
+        PermanentNotification.wasClosed = false;
 
         initMap();
         setupCompass();
@@ -92,6 +99,21 @@ public class MapActivity extends AppCompatActivity {
                 return false;
             }
         });
+
+        Intent in = new Intent(this, KillNotificationsService.class);
+        startService(in);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        //if we open the activity
+        PermanentNotification.wasClosed = false;
+    }
+
+    public void onDestroy() {
+        PermanentNotification.removeNotification(this);
+        super.onDestroy();
     }
 
     /**
@@ -117,13 +139,23 @@ public class MapActivity extends AppCompatActivity {
      */
     private void addInfoOnMap(String timeLeft, String distance, String time) {
         TextView time_car = (TextView) findViewById(R.id.time_car);
-        time_car.setText(timeLeft);
+
+        if(timeLeft.contains("-")) {
+            time_car.setTextColor(Color.RED);
+            time_car.setText("Temps expiré");
+        } else {
+            time_car.setTextColor(Color.WHITE);
+            time_car.setText(timeLeft);
+        }
 
         TextView distance_route = (TextView) findViewById(R.id.distance_route);
         distance_route.setText(distance);
 
         TextView time_route = (TextView) findViewById(R.id.time_route);
         time_route.setText(time);
+
+        //create or update the permanent notification
+        new PermanentNotification(this, timeLeft, distance, getMinuteBeforePointOfNoReturn());
     }
 
     /**
@@ -157,6 +189,7 @@ public class MapActivity extends AppCompatActivity {
 
         this.map = map;
         updateMapCursors();
+
     }
 
     /**
@@ -165,7 +198,7 @@ public class MapActivity extends AppCompatActivity {
      */
     private void updateMapCursors() {
         MapFunctions.clearMap(map);
-        MapFunctions.addCurrentPositionPoint(map, userLocation);
+        MapFunctions.addCurrentPositionPoint(map, userLocation, -Compass.azimuth);
         MapFunctions.addCarPoint(map, carLocation);
         boolean approximate = false;
 
@@ -190,6 +223,7 @@ public class MapActivity extends AppCompatActivity {
 
         String routeTime = DateManipulation.hourToStringHour(time);
         routeTime = routeTime.replace(':', 'h');
+
         if (time > 24)
             routeTime = (int) (time / 24) + "j" + routeTime;
         if (dateDiff.get(DateManipulation.ELAPSED_DAYS) > 0)  //Adds the days left when it's a very long walk
@@ -201,6 +235,7 @@ public class MapActivity extends AppCompatActivity {
 
         }
         this.addInfoOnMap(timeLeft, carDistance, routeTime);
+
     }
 
     /**
@@ -208,6 +243,35 @@ public class MapActivity extends AppCompatActivity {
      * if yes, raise a notification
      */
     private void checkPointOfNoReturn() {
+
+        Calendar calendarEndTime = getEndTimeCal();
+        Calendar calArrivingTimeAccordingToDistance = getArrivingTimeCalAccordingToDistance();
+
+        // Here will be the option for raising the point of no return before X minutes
+        int beAwareBeforeXMinutes = 5;
+
+        calendarEndTime.add(Calendar.MINUTE, -beAwareBeforeXMinutes);
+        String minutesString = Integer.toString(beAwareBeforeXMinutes);
+        if(beAwareBeforeXMinutes != 0){
+            minutesString += " minutes";
+        }
+
+        //if it's <= 0 it mean than calArrivingTime is higher or equals to the calendarEnd
+        if (calendarEndTime.getTime().compareTo(calArrivingTimeAccordingToDistance.getTime()) == 0) {
+            new PointOfNoReturnNotification(getApplicationContext(), minutesString);
+        }
+    }
+
+    private String getMinuteBeforePointOfNoReturn(){
+        Calendar calendarEndTime = getEndTimeCal();
+        Calendar calArrivingTimeAccordingToDistance = getArrivingTimeCalAccordingToDistance();
+        String minutesBeforePointOfNoReturn = DateManipulation.diffBetweenTwoDateTimeInString(calendarEndTime,
+                calArrivingTimeAccordingToDistance);
+
+        return minutesBeforePointOfNoReturn;
+    }
+
+    private Calendar getArrivingTimeCalAccordingToDistance(){
         Road road = MapFunctions.getRoad(map, userLocation, carLocation);
         Double distance = road.mLength;
         Double time = MathCalcul.getTime(distance, Settings.SPEED);
@@ -232,11 +296,18 @@ public class MapActivity extends AppCompatActivity {
         calArrivingTime.add(Calendar.HOUR_OF_DAY, distanceTimeHour);
         calArrivingTime.add(Calendar.MINUTE, distanceTimeMin);
 
-        //if it's <= 0 it mean than calArrivingTime is higher or equals to the calendarEnd
-        if (calendarEnd.getTime().compareTo(calArrivingTime.getTime()) == 0) {
-            new PointOfNoReturnNotification(getApplicationContext());
-        }
+        return calArrivingTime;
 
+    }
+
+    private Calendar getEndTimeCal(){
+        long ms = Data_Storage.get_parking_end_time_in_milliseconds(getApplicationContext());
+        Calendar calendarEnd = Calendar.getInstance();
+        calendarEnd.setTimeInMillis(ms);
+        //we set the millisecond and second to 0 for the next comparing of date
+        calendarEnd.set(Calendar.MILLISECOND, 0);
+        calendarEnd.set(Calendar.SECOND, 0);
+        return calendarEnd;
     }
 
     /**
@@ -301,6 +372,7 @@ public class MapActivity extends AppCompatActivity {
             }
         }
     }
+
 
     @Override
     public void onBackPressed() {
