@@ -167,12 +167,14 @@ public class MapActivity extends AppCompatActivity {
         MapFunctions.clearMap(map);
         MapFunctions.addCurrentPositionPoint(map, userLocation);
         MapFunctions.addCarPoint(map, carLocation);
+        boolean approximate = false;
 
         //MapFunctions.drawRoute(map, startPoint, endPoint);
         Road road = MapFunctions.getRoad(map, userLocation, carLocation);
         Double distance = road.mLength;
         if (distance == 0.0){ //problem of network
             distance=getCarDistance()*0.001;
+            approximate=true;
         }
         this.showFAB((distance <= Settings.CAR_FOUND_DISTANCE ));
 
@@ -193,7 +195,12 @@ public class MapActivity extends AppCompatActivity {
         if (dateDiff.get(DateManipulation.ELAPSED_DAYS) > 0)  //Adds the days left when it's a very long walk
             timeLeft = dateDiff.get(DateManipulation.ELAPSED_DAYS) + "j" + timeLeft;
 
-        this.addInfoOnMap(timeLeft, StringConversion.lengthToString(distance), routeTime);
+        String carDistance=StringConversion.lengthToString(distance);
+        if(approximate){
+            carDistance=getString(R.string.approximate_sign)+carDistance;
+
+        }
+        this.addInfoOnMap(timeLeft, carDistance, routeTime);
     }
 
     /**

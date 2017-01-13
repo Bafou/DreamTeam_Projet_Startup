@@ -59,5 +59,6 @@
     <string name="title_activity_start_activity">StartActivity</string>
     <string name="OSM_Credits">© les contributeurs d’<a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a></string>
     <string name="gps_unable_to_process">Position GPS non trouvée. Assurez-vous d\'être dans un endroit dégagé afin que le signal GPS fonctionne.</string>
+    <string name="approximate_sign">~</string>
 
 </resources>
