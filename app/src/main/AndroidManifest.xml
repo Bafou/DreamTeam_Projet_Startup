@@ -40,6 +40,12 @@
             android:label="@string/title_activity_time_stamp"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"></activity>
+        <receiver android:name=".utils.PermanentNotificationActionReceiver" android:exported="false">
+            <intent-filter>
+                <action android:name="close_action"/>
+            </intent-filter>
+        </receiver>
+        <service android:name=".services.KillNotificationsService" />
     </application>
 
 </manifest>

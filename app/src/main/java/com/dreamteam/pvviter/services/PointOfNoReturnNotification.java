@@ -10,6 +10,11 @@ import android.support.v4.app.TaskStackBuilder;
 
 import com.dreamteam.pvviter.R;
 import com.dreamteam.pvviter.activities.MapActivity;
+import com.dreamteam.pvviter.utils.DateManipulation;
+
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Hashtable;
 
 
 /**
@@ -21,19 +26,37 @@ public class PointOfNoReturnNotification {
 
 
     // Sets an ID for the notification
-    public int mNotificationId = 001;
+    public static int mNotificationId = 001;
+    public static Calendar lastRaise = null;
 
     /**
      * Build and show the notification
      *
      * @param context is te context of the app
      */
-    public PointOfNoReturnNotification(Context context) {
+    public PointOfNoReturnNotification(Context context, String minutes) {
 
-        String message = context.getResources().getString(R.string.point_of_no_return_message_notification);
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.MILLISECOND, 0);
+        cal.set(Calendar.SECOND, 0);
+
+        if(lastRaise != null){
+            if(!lastRaise.before(cal)){
+                return;
+            }
+        }
+        lastRaise = cal;
+
+
+        String message = "";
+        if(minutes.equals("0")){
+            message = context.getResources().getString(R.string.point_of_no_return_message_notification);
+        } else {
+            message = context.getResources().getString(R.string.point_of_no_return_notif) + " " + minutes;
+        }
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(context)
-                        .setSmallIcon(R.drawable.notificon)
+                        .setSmallIcon(R.drawable.pvviter)
                         .setContentTitle(context.getResources().getString(R.string.app_name))
                         .setContentText(message);
 
