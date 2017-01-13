@@ -28,6 +28,16 @@
         app:backgroundTint="@color/red" />
 
     <TextView
+        android:id="@+id/no_localisation_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:background="@color/red"
+        android:text="@string/no_localisation"
+        android:textColor="@color/white"
+        android:visibility="invisible"/>
+
+    <TextView
         android:id="@+id/OSM_Copyright_Text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
