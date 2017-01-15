@@ -200,15 +200,18 @@ public class MapActivity extends AppCompatActivity {
         MapFunctions.clearMap(map);
         MapFunctions.addCurrentPositionPoint(map, userLocation, -Compass.azimuth);
         MapFunctions.addCarPoint(map, carLocation);
+        boolean approximate = false;
 
         //MapFunctions.drawRoute(map, startPoint, endPoint);
         Road road = MapFunctions.getRoad(map, userLocation, carLocation);
         Double distance = road.mLength;
-        if (distance <= Settings.CAR_FOUND_DISTANCE) {
-            this.showFAB(true);
-        } else {
-            this.showFAB(false);
+        if (distance == 0.0){ //problem of network
+            distance=getCarDistance()*0.001;
+            approximate=true;
         }
+        this.showFAB((distance <= Settings.CAR_FOUND_DISTANCE ));
+
+
         Double time = MathCalcul.getTime(distance, Settings.SPEED);
         MapFunctions.drawRoute(map, road);
 
@@ -226,9 +229,13 @@ public class MapActivity extends AppCompatActivity {
         if (dateDiff.get(DateManipulation.ELAPSED_DAYS) > 0)  //Adds the days left when it's a very long walk
             timeLeft = dateDiff.get(DateManipulation.ELAPSED_DAYS) + "j" + timeLeft;
 
-        //timeleft - routetime = pointOfNoReturn
+        String carDistance=StringConversion.lengthToString(distance);
+        if(approximate){
+            carDistance=getString(R.string.approximate_sign)+carDistance;
 
-        this.addInfoOnMap(timeLeft, StringConversion.lengthToString(distance), routeTime);
+        }
+        this.addInfoOnMap(timeLeft, carDistance, routeTime);
+
     }
 
     /**
@@ -548,6 +555,14 @@ public class MapActivity extends AppCompatActivity {
                 iterator.remove();
             }
         }
+    }
+
+    /**
+     * return the distance between the user and the car
+     * @return the distance in meter
+     */
+    private int getCarDistance(){
+       return userLocation.distanceTo(carLocation);
     }
 
     /**
