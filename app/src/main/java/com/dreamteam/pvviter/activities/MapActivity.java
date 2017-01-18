@@ -128,6 +128,16 @@ public class MapActivity extends AppCompatActivity {
                 userLocation = Data_Storage.get_user_location(MapActivity.this);
                 updateMapCursors();
             }
+            @Override
+            public void onProviderDisabled(String provider) {
+                TextView noLocation  = (TextView) findViewById(R.id.no_localisation_text);
+                noLocation.setVisibility(View.VISIBLE);
+            }
+            @Override
+            public void onProviderEnabled(String provider) {
+                TextView noLocation  = (TextView) findViewById(R.id.no_localisation_text);
+                noLocation.setVisibility(View.INVISIBLE);
+            }
         };
     }
 
@@ -164,6 +174,7 @@ public class MapActivity extends AppCompatActivity {
     private void initMap() {
         TextView osm_copyright_text = (TextView) findViewById(R.id.OSM_Copyright_Text);
         osm_copyright_text.setMovementMethod(LinkMovementMethod.getInstance());
+
 
         /*
          * The user ID is set to prevent getting banned from the osm servers

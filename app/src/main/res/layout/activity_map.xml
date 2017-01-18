@@ -26,6 +26,23 @@
         android:onClick="fabClicked"
         android:src="@drawable/ic_thumb_up"
         app:backgroundTint="@color/red" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/no_localisation_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="5dp"
+            android:paddingTop="5dp"
+            android:gravity="center"
+            android:background="@color/red"
+            android:text="@string/no_localisation"
+            android:textColor="@color/white"
+            android:visibility="invisible"/>
+    </LinearLayout>
+
 
     <TextView
         android:id="@+id/OSM_Copyright_Text"
