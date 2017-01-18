@@ -4,9 +4,15 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.dreamteam.pvviter.R;
@@ -19,6 +25,7 @@ import org.osmdroid.util.GeoPoint;
 public class StartActivity extends Activity {
     private boolean stopThread = false;
     public boolean displayToast = false;
+    static public boolean display_PV_avoided = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +36,10 @@ public class StartActivity extends Activity {
         if (FileIO.does_file_exist(getApplicationContext(), FileIO.PARKING_END_TIME)) {
             Intent intent = new Intent(this, MapActivity.class);
             startActivity(intent);
+        }
+
+        if(display_PV_avoided){
+            display_pv_avoided_dialog();
         }
     }
 
@@ -109,5 +120,34 @@ public class StartActivity extends Activity {
                         });
         AlertDialog alert = alertDialogBuilder.create();
         alert.show();
+    }
+
+    public void display_pv_avoided_dialog(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setPositiveButton(R.string.super_yes , null);
+        final AlertDialog dialog = builder.create();
+        LayoutInflater inflater = getLayoutInflater();
+        View dialogLayout = inflater.inflate(R.layout.pv_avoided, null);
+        dialog.setView(dialogLayout);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+
+        dialog.show();
+
+        dialog.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface d) {
+                ImageView image = (ImageView) dialog.findViewById(R.id.pvavoidedImage);
+                Bitmap icon = BitmapFactory.decodeResource(getApplicationContext().getResources(),
+                        R.drawable.bravo);
+                float imageWidthInPX = (float)image.getWidth();
+
+                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(Math.round(imageWidthInPX),
+                        Math.round(imageWidthInPX * (float)icon.getHeight() / (float)icon.getWidth()));
+                image.setLayoutParams(layoutParams);
+
+
+            }
+        });
+        display_PV_avoided = false;
     }
 }
