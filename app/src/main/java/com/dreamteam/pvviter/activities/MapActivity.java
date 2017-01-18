@@ -466,7 +466,12 @@ public class MapActivity extends AppCompatActivity {
                         startActivity(i);
                     }
                 })
-                .setNegativeButton(negativeButton, null);
+                .setNegativeButton(negativeButton, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        StartActivity.display_PV_avoided = false;
+                    }
+                });
     }
 
     /**
@@ -585,6 +590,7 @@ public class MapActivity extends AppCompatActivity {
      * @param view
      */
     public void fabClicked(View view) {
+        StartActivity.display_PV_avoided = true;
         String title = getString(R.string.action_reset_title2);
         String positiveButton = getString(R.string.positive_button_alert_dialog);
         String negativeButton = getString(R.string.negative_button_alert_dialog);
