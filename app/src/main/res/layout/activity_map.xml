@@ -8,10 +8,10 @@
     tools:context="com.dreamteam.pvviter.activities.MapActivity">
 
 
-    <!--<org.osmdroid.views.MapView
+    <org.osmdroid.views.MapView
         android:id="@+id/map"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent" />-->
+        android:layout_height="fill_parent" />
 
 
     <android.support.design.widget.FloatingActionButton xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -39,8 +39,8 @@
             android:gravity="center"
             android:background="@color/red"
             android:text="@string/no_localisation"
-            android:textColor="@color/white"/>
-        <!--android:visibility="invisible"/>-->
+            android:textColor="@color/white"
+            android:visibility="invisible"/>
     </LinearLayout>
 
 
